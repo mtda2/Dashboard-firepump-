@@ -66,17 +66,21 @@
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
         
+        /* IMPROVEMENT #2: Removed overflow:hidden to allow dropdowns to show */
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
             border-radius: 1.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
-            max-width: 95vw; width: auto; overflow: hidden; max-height: 85vh;
+            max-width: 95vw; width: auto; max-height: 85vh;
         }
         @media (min-width: 640px) { dialog { width: 750px; border-radius: 2.5rem;} }
         
         dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .dialog-content-wrapper { padding: 1rem 1.5rem; display: flex; flex-direction: column; height: 100%; }
+
+        /* IMPROVEMENT #1, #3, #4: New robust structure for all dialog content */
+        .dialog-content-wrapper { padding: 1rem 1.5rem; display: flex; flex-direction: column; height: 100%; max-height: 85vh; }
         .dialog-header { display: flex; align-items: center; border-bottom: 1px solid rgba(200, 220, 210, 0.8); padding-bottom: 1rem; margin-bottom: 1rem; flex-shrink: 0; }
-        .dialog-body-scrollable { flex-grow: 1; overflow-y: auto; }
+        .dialog-body-scrollable { flex-grow: 1; overflow-y: auto; padding-right: 0.5rem; } /* Added padding for scrollbar */
+        
         .ai-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0; }
         .header-gradient-text { background: linear-gradient(90deg, #00796b, #26a69a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .ai-response-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.2rem; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.09); border-left-width: 10px; }
@@ -192,7 +196,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // BUG FIX: Renamed conflicting variables to prevent initialization errors.
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
         let allRecords = [];
         let filteredRecords = [];
@@ -324,7 +327,6 @@
             createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
         }
         
-        // BUG FIX: Renamed conflicting variables to prevent initialization errors.
         function populateHistoryTable(data,headers){const mainColumns=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=mainColumns.map(colName=>`<th class="px-1 py-3 text-left font-semibold whitespace-nowrap text-xs">${abbreviateHeader(colName)}</th>`).join('')+'<th class="px-1 py-3 text-left font-semibold text-xs">Actions</th>';let tableHtml="";data.forEach((row,rowIndex)=>{tableHtml+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${rowIndex}">`;mainColumns.forEach(colName=>{const headerKey=headers.find(h=>h.toLowerCase().startsWith(colName.toLowerCase()))||colName;let rawValue=row[headerKey];let formattedValue=null==rawValue?"":rawValue;"Actual"===colName&&(formattedValue=DateHandler.formatDate(DateHandler.parseDate(rawValue)));tableHtml+=`<td class="px-1 py-2 whitespace-nowrap text-xs">${formattedValue}</td>`});tableHtml+=`<td class="px-1 py-2 flex items-center gap-1"><button class="toggle-details" data-target="${rowIndex}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${rowIndex}">🤖 วิเคราะห์</button></td></tr>`;tableHtml+=`<tr class="details-row" id="details-${rowIndex}"><td colspan="${mainColumns.length+1}" class="details-cell"><div class="details-grid">`;headers.filter(header=>!mainColumns.some(colName=>header.toLowerCase().startsWith(colName.toLowerCase()))&&"Plan"!==header).forEach(header=>{const topic=abbreviateHeader(header);let result=row[header]||"-";["เปลี่ยน","วันที่","แผน"].some(val=>topic.includes(val))&&DateHandler.parseDate(row[header])&&(result=DateHandler.formatDate(DateHandler.parseDate(row[header])));tableHtml+=`<div class="details-item"><span class="topic">${topic}</span><span class="result">${result}</span></div>`});tableHtml+="</div></td></tr>"});document.getElementById("table-body").innerHTML=tableHtml;document.querySelectorAll(".toggle-details").forEach(btn=>{btn.addEventListener("click",event=>{const targetIndex=event.target.dataset.target,detailsRow=document.getElementById(`details-${targetIndex}`);detailsRow&&("table-row"===detailsRow.style.display?(detailsRow.style.display="none",event.target.textContent="📄 ดู"):(detailsRow.style.display="table-row",event.target.textContent="📄 ซ่อน"))})});document.querySelectorAll(".ai-analyze-btn").forEach(btn=>{btn.addEventListener("click",event=>{runAiAnalysis(parseInt(event.currentTarget.dataset.rowIndex,10))})})}
 
         function createCheckboxFilter(containerId, options, type) {

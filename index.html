@@ -19,7 +19,12 @@
             background-image: radial-gradient(at top left, var(--primary-bg), transparent), radial-gradient(at bottom right, var(--secondary-bg), transparent);
             background-repeat: no-repeat; background-attachment: fixed; color: var(--text-dark);
         }
-        .text-header { color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
+        .text-header { 
+            color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            /* IMPROVEMENT #3: Prevent header text from overflowing */
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
         .glass-card { 
             background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.7); 
@@ -57,15 +62,14 @@
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
         
-        /* IMPROVEMENT: Responsive Dialogs for Mobile */
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
             border-radius: 2.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
-            max-width: 95vw; /* Use viewport width on small screens */
-            width: auto; /* Allow width to be flexible */
+            max-width: 95vw; 
+            width: auto;
             overflow: hidden;
         }
-        @media (min-width: 640px) { /* Apply fixed width only on larger screens */
+        @media (min-width: 640px) {
             dialog {
                 width: 750px;
             }
@@ -98,16 +102,15 @@
         .fab { width: 60px; height: 60px; border-radius: 50%; background-color: var(--accent); color: white; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer; border: none; }
         .fab:hover { background-color: var(--text-light); transform: translateY(-3px) scale(1.05); }
 
-        /* IMPROVEMENT: Responsive History Table for Mobile */
-        @media (max-width: 767px) { /* Applies only on screens smaller than 768px (Tailwind's `md` breakpoint) */
+        @media (max-width: 767px) {
             .responsive-table {
                 overflow: hidden;
             }
             .responsive-table thead {
-                display: none; /* Hide table headers on mobile */
+                display: none;
             }
             .responsive-table tbody tr {
-                display: block; /* Each row becomes a block-level card */
+                display: block;
                 background-color: rgba(255,255,255,0.4);
                 border: 1px solid rgba(0, 121, 107, 0.1);
                 border-radius: 12px;
@@ -116,17 +119,16 @@
                 box-shadow: 0 4px 12px rgba(0, 77, 64, 0.05);
             }
             .responsive-table tbody td {
-                display: flex; /* Use flexbox for label-value alignment */
+                display: flex;
                 justify-content: space-between;
                 align-items: center;
                 padding: 0.6rem 0.25rem;
-                text-align: right; /* Align value to the right */
+                text-align: right;
                 border-bottom: 1px dotted rgba(0, 121, 107, 0.2);
             }
             .responsive-table tbody tr td:last-child {
-                border-bottom: none; /* Remove border from last item in the card */
+                border-bottom: none;
             }
-            /* Use the data-label attribute to create a pseudo-header */
             .responsive-table tbody td:before {
                 content: attr(data-label);
                 font-weight: 600;
@@ -135,14 +137,13 @@
                 margin-right: 1rem;
                 flex-shrink: 0;
             }
-            /* Special styling for the actions (buttons) cell */
             .responsive-table .actions-cell {
-                justify-content: flex-start; /* Align buttons to the left */
+                justify-content: flex-start;
                 gap: 0.5rem;
                 padding-top: 0.75rem;
             }
             .responsive-table .actions-cell:before {
-                display: none; /* Hide the pseudo-header for the actions cell */
+                display: none;
             }
         }
     </style>
@@ -169,7 +170,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 text-header">แดชบอร์ด Fire Pump</h1>
+                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 text-header">แดชบอร์ด Fire Pump</h1>
                     <p id="system-time" class="text-sm opacity-70"></p>
                 </div>
             </div>
@@ -189,13 +190,13 @@
         </div>
         
         <div id="dashboard-content" class="relative z-10 opacity-0 transition-opacity duration-500">
-             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+             <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="shield-check"></i></div><p class="text-sm mb-1 opacity-70">สถานะระบบ</p><p id="system-status" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-check"></i></div><p class="text-sm mb-1 opacity-70">ตรวจสอบล่าสุด</p><p id="last-inspection-date" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-clock"></i></div><p class="text-sm mb-1 opacity-70">แผน PM ถัดไป</p><p id="next-pm-date" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="alert-triangle"></i></div><p class="text-sm mb-1 opacity-70">จำนวน Issue</p><p id="issue-count" class="text-2xl font-bold"></p></div>
             </div>
-             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="activity" class="mr-2"></i>แนวโน้มรอบเครื่องยนต์ (RPM)</h2><div id="engine-speed-chart"></div></div>
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="pie-chart" class="mr-2"></i>ภาพรวมการตรวจสอบ</h2><div id="overview-chart"></div></div>
             </div>
@@ -221,10 +222,9 @@
     </div>
 
 <script>
-    // NOTE: The JavaScript code remains unchanged as the logic is sound. 
-    // The only modification is in the `populateHistoryTable` function to support the responsive table.
-
     document.addEventListener('DOMContentLoaded', function() {
+        // NOTE: The only change in the script is inside `populateHistoryTable` to handle long names.
+        // All other logic remains identical.
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
         let allRecords = [];
         let filteredRecords = [];
@@ -355,9 +355,18 @@
             createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
         }
 
-        // IMPROVEMENT: Function updated to add `data-label` attribute for responsive CSS
-        function populateHistoryTable(data,headers){const t=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=t.map(e=>`<th class="px-4 py-3 text-left font-semibold">${abbreviateHeader(e)}</th>`).join('')+'<th class="px-4 py-3 text-left font-semibold">Actions</th>';let a="";data.forEach((s,r)=>{a+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${r}">`,t.forEach(e=>{const i=headers.find(t=>t.toLowerCase().startsWith(e.toLowerCase()))||e,l=s[i];let o=null==l?"":l;"Actual"===i&&(o=DateHandler.formatDate(DateHandler.parseDate(l)));const d=abbreviateHeader(e);a+=`<td class="px-4 py-3" data-label="${d}">${o}</td>`}),a+=`<td class="px-4 py-3 flex items-center gap-2 actions-cell"><button class="toggle-details" data-target="${r}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${r}">🤖 วิเคราะห์</button></td></tr>`,a+=`<tr class="details-row" id="details-${r}"><td colspan="${t.length+1}" class="details-cell"><div class="details-grid">`,headers.filter(e=>!t.some(t=>e.toLowerCase().startsWith(t.toLowerCase()))&&"Plan"!==e).forEach(e=>{const t=abbreviateHeader(e);let i=s[e]||"-";["เปลี่ยน","วันที่","แผน"].some(e=>t.includes(e))&&DateHandler.parseDate(s[e])&&(i=DateHandler.formatDate(DateHandler.parseDate(s[e]))),a+=`<div class="details-item"><span class="topic">${t}</span><span class="result">${i}</span></div>`}),a+="</div></td></tr>"}),document.getElementById("table-body").innerHTML=a,document.querySelectorAll(".toggle-details").forEach(e=>{e.addEventListener("click",t=>{const a=t.target.dataset.target,s=document.getElementById(`details-${a}`);s&&("table-row"===s.style.display?(s.style.display="none",t.target.textContent="📄 ดู"):(s.style.display="table-row",t.target.textContent="📄 ซ่อน"))})}),document.querySelectorAll(".ai-analyze-btn").forEach(e=>{e.addEventListener("click",e=>{runAiAnalysis(parseInt(e.currentTarget.dataset.rowIndex,10))})})}
+        // IMPROVEMENT #2: Function to truncate long lists of names
+        const formatNames = (nameString) => {
+            if (!nameString || typeof nameString !== 'string') return '';
+            const names = nameString.split(/\s+/).filter(Boolean); // Split by any whitespace and remove empty entries
+            if (names.length <= 1) {
+                return nameString;
+            }
+            return `${names[0]} +${names.length - 1}`;
+        };
 
+        function populateHistoryTable(data,headers){const t=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=t.map(e=>`<th class="px-4 py-3 text-left font-semibold">${abbreviateHeader(e)}</th>`).join('')+'<th class="px-4 py-3 text-left font-semibold">Actions</th>';let a="";data.forEach((s,r)=>{a+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${r}">`,t.forEach(e=>{const i=headers.find(t=>t.toLowerCase().startsWith(e.toLowerCase()))||e;let l=s[i];let o=null==l?"":l;const d=abbreviateHeader(e);"Actual"===e?o=DateHandler.formatDate(DateHandler.parseDate(l)):"ผู้ปฏิบัติงาน"===e||"ผู้ตรวจสอบ"===e?o=formatNames(l):null;a+=`<td class="px-4 py-3" data-label="${d}">${o}</td>`}),a+=`<td class="px-4 py-3 flex items-center gap-2 actions-cell"><button class="toggle-details" data-target="${r}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${r}">🤖 วิเคราะห์</button></td></tr>`,a+=`<tr class="details-row" id="details-${r}"><td colspan="${t.length+1}" class="details-cell"><div class="details-grid">`,headers.filter(e=>!t.some(t=>e.toLowerCase().startsWith(t.toLowerCase()))&&"Plan"!==e).forEach(e=>{const t=abbreviateHeader(e);let i=s[e]||"-";["เปลี่ยน","วันที่","แผน"].some(e=>t.includes(e))&&DateHandler.parseDate(s[e])&&(i=DateHandler.formatDate(DateHandler.parseDate(s[e]))),a+=`<div class="details-item"><span class="topic">${t}</span><span class="result">${i}</span></div>`}),a+="</div></td></tr>"}),document.getElementById("table-body").innerHTML=a,document.querySelectorAll(".toggle-details").forEach(e=>{e.addEventListener("click",t=>{const a=t.target.dataset.target,s=document.getElementById(`details-${a}`);s&&("table-row"===s.style.display?(s.style.display="none",t.target.textContent="📄 ดู"):(s.style.display="table-row",t.target.textContent="📄 ซ่อน"))})}),document.querySelectorAll(".ai-analyze-btn").forEach(e=>{e.addEventListener("click",e=>{runAiAnalysis(parseInt(e.currentTarget.dataset.rowIndex,10))})})}
+        
         function createCheckboxFilter(containerId, options, type) {
             const container = document.getElementById(containerId);
             if (!container) return;

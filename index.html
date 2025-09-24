@@ -46,6 +46,7 @@
         .checkbox-list label { display: block; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-dark); }
         .checkbox-list label:hover { background-color: rgba(0, 121, 107, 0.1); }
         
+        /* This rule allows the dropdown in the report dialog to pop upwards */
         #managementReportDialog .checkbox-list { bottom: 100%; margin-bottom: 4px; }
 
         .details-row { display: none; }
@@ -580,8 +581,8 @@
                 </div>
                 <div class="flex-shrink-0 space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="block text-sm font-medium mb-1">เลือกปี (พ.ศ.):</label><div id="report-year-filter" class="custom-filter border rounded-md p-2"></div></div>
-                        <div><label class="block text-sm font-medium mb-1">เลือกเดือน:</label><div id="report-month-filter" class="custom-filter border rounded-md p-2"></div></div>
+                        <div><label class="block text-sm font-medium mb-1">เลือกปี (พ.ศ.):</label><div id="report-year-filter" class="custom-filter"></div></div>
+                        <div><label class="block text-sm font-medium mb-1">เลือกเดือน:</label><div id="report-month-filter" class="custom-filter"></div></div>
                     </div>
                     <button id="generate-summary-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg">สร้างสรุป</button>
                 </div>
@@ -598,7 +599,7 @@
 
             document.getElementById('generate-summary-btn').addEventListener('click', () => {
                 const selectedYears = Array.from(document.querySelectorAll('#report-year-filter input:checked')).map(cb => parseInt(cb.value));
-                const selectedMonths = Array.from(document.querySelectorAll('#month-filter input:checked')).map(cb => parseInt(cb.value));
+                const selectedMonths = Array.from(document.querySelectorAll('#report-month-filter input:checked')).map(cb => parseInt(cb.value));
 
                 const reportData = allRecords.filter(r => {
                     const date = DateHandler.parseDate(r.Actual);

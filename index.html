@@ -21,8 +21,7 @@
         }
         .text-header { 
             color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-            overflow-wrap: break-word;
-            word-break: break-word;
+            overflow-wrap: break-word; word-break: break-word;
         }
         .glass-card { 
             background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -47,16 +46,18 @@
         .checkbox-list label { display: block; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-dark); }
         .checkbox-list label:hover { background-color: rgba(0, 121, 107, 0.1); }
         
-        #managementReportDialog .checkbox-list {
-            bottom: 100%; margin-bottom: 4px;
-        }
+        #managementReportDialog .checkbox-list { bottom: 100%; margin-bottom: 4px; }
 
         .details-row { display: none; }
+        /* IMPROVEMENT #2: Enhanced styling for history details */
         .details-cell { padding: 1rem; background-color: rgba(0, 121, 107, 0.03); }
-        .details-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-        .details-item { display: flex; justify-content: space-between; align-items: center; }
-        .details-item .topic { font-weight: 500; color: var(--text-light); padding: 0.25rem 0.75rem; background-color: rgba(0, 121, 107, 0.08); border-radius: 99px; }
-        .details-item .result { font-weight: 600; text-align: right; }
+        .details-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+        @media (min-width: 640px) { .details-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
+        .details-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid rgba(0, 121, 107, 0.1); }
+        .details-item:last-child { border-bottom: none; }
+        .details-item .topic { font-weight: 500; color: var(--text-light); background-color: transparent; padding: 0; flex-shrink: 0; margin-right: 1rem; }
+        .details-item .result { font-weight: 600; text-align: right; color: var(--text-dark); word-break: break-all; }
+        
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
         
@@ -65,9 +66,7 @@
             border-radius: 2.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
             max-width: 95vw; width: auto; overflow: hidden;
         }
-        @media (min-width: 640px) {
-            dialog { width: 750px; }
-        }
+        @media (min-width: 640px) { dialog { width: 750px; } }
         
         dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .dialog-content { max-height: 70vh; overflow-y: auto; padding: 0.25rem 1rem 0.25rem 0.25rem; }
@@ -96,8 +95,22 @@
         .fab { width: 60px; height: 60px; border-radius: 50%; background-color: var(--accent); color: white; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer; border: none; }
         .fab:hover { background-color: var(--text-light); transform: translateY(-3px) scale(1.05); }
 
-        /* IMPROVEMENT #2: Removed responsive table CSS to revert to desktop-like table view. */
-        /* Horizontal scrolling is now handled by the `overflow-x-auto` class on the container div. */
+        /* IMPROVEMENT #3: Interactive report styles */
+        .summary-item.clickable { cursor: pointer; transition: background-color 0.2s; }
+        .summary-item.clickable:hover { background-color: rgba(0, 121, 107, 0.1); }
+        .report-details-container {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out;
+            background: rgba(255, 255, 255, 0.4); border-radius: 12px; margin-top: 1rem;
+        }
+        .report-details-container.show { max-height: 500px; /* Adjust as needed */ }
+        .report-details-list { list-style-type: none; padding: 1rem; margin: 0; }
+        .report-details-list li {
+            padding: 0.75rem; border-bottom: 1px solid rgba(0, 121, 107, 0.1);
+            font-size: 0.9rem;
+        }
+        .report-details-list li:last-child { border-bottom: none; }
+        .report-details-list .issue-date { font-weight: 600; color: var(--text-light); }
+        .report-details-list .issue-message { margin-top: 0.25rem; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -142,7 +155,7 @@
         </div>
         
         <div id="dashboard-content" class="relative z-10 opacity-0 transition-opacity duration-500">
-             <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="shield-check"></i></div><p class="text-sm mb-1 opacity-70">สถานะระบบ</p><p id="system-status" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-check"></i></div><p class="text-sm mb-1 opacity-70">ตรวจสอบล่าสุด</p><p id="last-inspection-date" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-clock"></i></div><p class="text-sm mb-1 opacity-70">แผน PM ถัดไป</p><p id="next-pm-date" class="text-2xl font-bold"></p></div>
@@ -152,11 +165,11 @@
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="activity" class="mr-2"></i>แนวโน้มรอบเครื่องยนต์ (RPM)</h2><div id="engine-speed-chart"></div></div>
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="pie-chart" class="mr-2"></i>ภาพรวมการตรวจสอบ</h2><div id="overview-chart"></div></div>
             </div>
-            <div class="grid grid-cols-4 gap-2 mb-8">
-                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="fuel" class="mr-1 h-4 w-4"></i>น้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
-                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="thermometer" class="mr-1 h-4 w-4"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
-                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="droplets" class="mr-1 h-4 w-4"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
-                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="battery-charging" class="mr-1 h-4 w-4"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="fuel" class="mr-2"></i>ระดับน้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
+                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="thermometer" class="mr-2"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
+                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="droplets" class="mr-2"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
+                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="battery-charging" class="mr-2"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
             </div>
             <div class="glass-card p-6" style="margin-bottom: 80px;">
                 <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-lucide="history" class="mr-2"></i>ประวัติการตรวจสอบ</h2>
@@ -175,7 +188,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // NOTE: JS logic remains the same, only presentation-related parts are adjusted.
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
         let allRecords = [];
         let filteredRecords = [];
@@ -214,15 +226,15 @@
                 noData: { text: 'ไม่พบข้อมูลสำหรับช่วงเวลานี้', align: 'center', verticalAlign: 'middle' }
             };
             
-            // IMPROVEMENT #1: Adjusted radial chart options for compact view
+            // IMPROVEMENT #1: Restored radial chart options for better readability.
             const radialOptions = {
-                chart: { type: 'radialBar', height: 160, sparkline: { enabled: true } }, // Smaller height and sparkline mode
+                chart: { type: 'radialBar', height: 250 },
                 plotOptions: {
                     radialBar: {
-                        hollow: { size: '55%' },
+                        hollow: { size: '60%' },
                         dataLabels: {
-                            name: { show: true, fontSize: '11px', offsetY: -8, color: 'rgba(0,77,64,0.6)' },
-                            value: { offsetY: 2, color: '#004d40', fontSize: '18px' }
+                            name: { show: true, fontSize: '14px', offsetY: -10, color: 'rgba(0,77,64,0.6)' },
+                            value: { offsetY: 5, color: '#004d40', fontSize: '24px' }
                         },
                         track: { background: 'rgba(0,121,107,0.1)' }
                     }
@@ -308,8 +320,6 @@
             createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
         }
         
-        // IMPROVEMENT #2: Reverted populateHistoryTable to create a standard table.
-        // Removed `formatNames` and `data-label` as they are no longer needed.
         function populateHistoryTable(data,headers){const t=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=t.map(e=>`<th class="px-2 py-3 text-left font-semibold whitespace-nowrap">${abbreviateHeader(e)}</th>`).join('')+'<th class="px-2 py-3 text-left font-semibold">Actions</th>';let a="";data.forEach((s,r)=>{a+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${r}">`,t.forEach(e=>{const t=headers.find(t=>t.toLowerCase().startsWith(e.toLowerCase()))||e;let i=s[t];let l=null==i?"":i;"Actual"===t&&(l=DateHandler.formatDate(DateHandler.parseDate(i)));a+=`<td class="px-2 py-2 whitespace-nowrap">${l}</td>`}),a+=`<td class="px-2 py-2 flex items-center gap-2"><button class="toggle-details" data-target="${r}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${r}">🤖 วิเคราะห์</button></td></tr>`,a+=`<tr class="details-row" id="details-${r}"><td colspan="${t.length+1}" class="details-cell"><div class="details-grid">`,headers.filter(e=>!t.some(t=>e.toLowerCase().startsWith(t.toLowerCase()))&&"Plan"!==e).forEach(e=>{const t=abbreviateHeader(e);let i=s[e]||"-";["เปลี่ยน","วันที่","แผน"].some(e=>t.includes(e))&&DateHandler.parseDate(s[e])&&(i=DateHandler.formatDate(DateHandler.parseDate(s[e]))),a+=`<div class="details-item"><span class="topic">${t}</span><span class="result">${i}</span></div>`}),a+="</div></td></tr>"}),document.getElementById("table-body").innerHTML=a,document.querySelectorAll(".toggle-details").forEach(e=>{e.addEventListener("click",t=>{const a=t.target.dataset.target,s=document.getElementById(`details-${a}`);s&&("table-row"===s.style.display?(s.style.display="none",t.target.textContent="📄 ดู"):(s.style.display="table-row",t.target.textContent="📄 ซ่อน"))})}),document.querySelectorAll(".ai-analyze-btn").forEach(e=>{e.addEventListener("click",e=>{runAiAnalysis(parseInt(e.currentTarget.dataset.rowIndex,10))})})}
 
         function createCheckboxFilter(containerId, options, type) {
@@ -541,6 +551,7 @@
             }, 500);
         }
 
+        // IMPROVEMENT #3: Major enhancement to make the executive report interactive
         function generateExecutiveReport() {
             const dialog = document.getElementById('managementReportDialog');
             const years = [...new Set(allRecords.map(r => DateHandler.parseDate(r.Actual).getFullYear()))].sort((a,b) => b-a);
@@ -548,7 +559,7 @@
             dialog.innerHTML = `<div class="p-6">
                 <div class="dialog-header">
                     <i data-lucide="file-text" class="text-teal-600"></i>
-                    <h2 class="header-gradient-text text-2xl font-bold ml-4">สร้างรายงาน</h2>
+                    <h2 class="header-gradient-text text-2xl font-bold ml-4">สร้างรายงานสรุป</h2>
                     <button onclick="this.closest('dialog').close()" class="ml-auto text-3xl font-bold text-gray-500 hover:text-gray-800">&times;</button>
                 </div>
                 <div class="space-y-4">
@@ -575,28 +586,28 @@
 
                 const reportData = allRecords.filter(r => {
                     const date = DateHandler.parseDate(r.Actual);
+                    if (!date) return false;
                     const yearMatch = selectedYears.length === 0 || selectedYears.includes(date.getFullYear());
                     const monthMatch = selectedMonths.length === 0 || selectedMonths.includes(date.getMonth());
                     return yearMatch && monthMatch;
                 });
 
+                const summaryContent = document.getElementById('summary-content');
                 if (reportData.length === 0) {
-                    document.getElementById('summary-content').innerHTML = '<p class="text-center text-red-500 mt-4">ไม่พบข้อมูลสำหรับช่วงเวลาที่เลือก</p>';
-                    document.getElementById('summary-content').classList.remove('hidden');
+                    summaryContent.innerHTML = '<p class="text-center text-red-500 mt-4">ไม่พบข้อมูลสำหรับช่วงเวลาที่เลือก</p>';
+                    summaryContent.classList.remove('hidden');
                     return;
                 }
 
-                let totalCritical = 0;
-                let totalWarning = 0;
+                const criticalDetails = [];
+                const warningDetails = [];
                 const problemFrequency = {};
-                let numericTrends = {
-                    'Cooling Water Temperature': [], 'Battery Charging Volt': []
-                };
+                let numericTrends = { 'Cooling Water Temperature': [], 'Battery Charging Volt': [] };
                 
                 reportData.forEach(record => {
                     const aiData = {};
                     const headers = Object.keys(record);
-                     for (const headerKey in headerToEntryIdMap) {
+                    for (const headerKey in headerToEntryIdMap) {
                         const entryId = headerToEntryIdMap[headerKey];
                         const fullHeader = headers.find(h => h.startsWith(headerKey));
                         if (fullHeader && record[fullHeader] !== undefined) aiData[entryId] = record[fullHeader];
@@ -604,16 +615,20 @@
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = generateAiAnalysis(aiData);
                     
-                    const criticalItems = tempDiv.querySelectorAll('.ai-critical li');
-                    const warningItems = tempDiv.querySelectorAll('.ai-warning li');
-                    totalCritical += criticalItems.length;
-                    totalWarning += warningItems.length;
+                    const collectIssues = (items, collection) => {
+                        items.forEach(item => {
+                            const title = item.querySelector('strong')?.textContent.replace('วินิจฉัย:','').trim();
+                            if(title) problemFrequency[title] = (problemFrequency[title] || 0) + 1;
+                            collection.push({
+                                date: record.Actual,
+                                operator: record['ผู้ปฏิบัติงาน'],
+                                issueHTML: item.innerHTML
+                            });
+                        });
+                    };
 
-                    const allItems = [...criticalItems, ...warningItems];
-                    allItems.forEach(item => {
-                        const title = item.querySelector('strong')?.textContent.replace('วินิจฉัย:','').trim();
-                        if(title) problemFrequency[title] = (problemFrequency[title] || 0) + 1;
-                    });
+                    collectIssues(tempDiv.querySelectorAll('.ai-critical li'), criticalDetails);
+                    collectIssues(tempDiv.querySelectorAll('.ai-warning li'), warningDetails);
 
                     for(const key in numericTrends){
                         const fullHeader = headers.find(h => h.startsWith(key));
@@ -636,28 +651,17 @@
                 let periodText = 'สรุปภาพรวมทั้งหมด';
                 if(selectedYears.length > 0) periodText = `สรุปปี พ.ศ. ${selectedYears.map(y => y + 543).join(', ')}`;
                 if(selectedMonths.length > 0) periodText += ` เดือน ${selectedMonths.map(m => thaiMonths[m]).join(', ')}`;
-
-
-                let reportTextForCopy = `รายงานสรุป Fire Pump\nช่วงเวลา: ${periodText.replace(/<[^>]*>/g, '')}\n========================================\n`;
-                reportTextForCopy += `จำนวนการตรวจสอบ: ${reportData.length} ครั้ง\n`;
-                reportTextForCopy += `ปัญหาระดับวิกฤตที่พบ (รวม): ${totalCritical} รายการ\n`;
-                reportTextForCopy += `ข้อควรระวัง (รวม): ${totalWarning} รายการ\n\n`;
-                reportTextForCopy += "แนวโน้มที่สำคัญ:\n";
-                for (const key in numericTrends) { reportTextForCopy += `- ${abbreviateHeader(key)}: ${getTrend(numericTrends[key])}\n`; }
-                reportTextForCopy += "\nปัญหาที่พบบ่อยที่สุด:\n";
-                if (sortedProblems.length > 0) { sortedProblems.forEach(([key, value], i) => { reportTextForCopy += `${i+1}. ${key} (${value} ครั้ง)\n`; });
-                } else { reportTextForCopy += "- ไม่พบรายการผิดปกติที่เกิดซ้ำ\n"; }
-
-
-                const summaryContent = document.getElementById('summary-content');
+                
                 summaryContent.innerHTML = `
                     <hr class="my-4">
                     <p class="text-center text-gray-600"><strong>${periodText}</strong></p>
                     <div class="executive-summary-grid mt-4">
                         <div class="summary-item"><div class="label">จำนวนการตรวจสอบ</div><div class="value">${reportData.length} ครั้ง</div></div>
-                        <div class="summary-item"><div class="label">ปัญหาระดับวิกฤต (รวม)</div><div class="value" style="color:${totalCritical > 0 ? 'var(--color-danger)' : 'var(--color-ok)'}">${totalCritical} รายการ</div></div>
-                        <div class="summary-item"><div class="label">ข้อควรระวัง (รวม)</div><div class="value" style="color:${totalWarning > 0 ? 'var(--color-warning)' : 'var(--color-ok)'}">${totalWarning} รายการ</div></div>
+                        <div id="critical-summary" class="summary-item ${criticalDetails.length > 0 ? 'clickable' : ''}"><div class="label">ปัญหาระดับวิกฤต (รวม)</div><div class="value" style="color:${criticalDetails.length > 0 ? 'var(--color-danger)' : 'var(--color-ok)'}">${criticalDetails.length} รายการ</div></div>
+                        <div id="warning-summary" class="summary-item ${warningDetails.length > 0 ? 'clickable' : ''}"><div class="label">ข้อควรระวัง (รวม)</div><div class="value" style="color:${warningDetails.length > 0 ? 'var(--color-warning)' : 'var(--color-ok)'}">${warningDetails.length} รายการ</div></div>
                     </div>
+                    <div id="critical-details" class="report-details-container"></div>
+                    <div id="warning-details" class="report-details-container"></div>
                     <div class="ai-response-card ai-summary mt-4">
                         <h3>📊 การวิเคราะห์แนวโน้ม</h3>
                         <ul class="list-none p-0 m-0 space-y-2">
@@ -666,25 +670,34 @@
                     </div>
                      <div class="ai-response-card ai-summary mt-4">
                         <h3>⚠️ ปัญหาที่พบบ่อยที่สุด</h3>
-                        ${sortedProblems.length > 0 ? `<ol class="list-decimal pl-5">${sortedProblems.map(([key, value]) => `<li>${key} <strong>(${value} ครั้ง)</strong></li>`).join('')}</ol>` : '<p>ไม่พบรายการผิดปกติที่เกิดซ้ำในช่วงเวลานี้</p>'}
+                        ${sortedProblems.length > 0 ? `<ol class="list-decimal pl-5">${sortedProblems.map(([key, value]) => `<li>${key} <strong>(${value} ครั้ง)</strong></li>`).join('')}</ol>` : '<p>ไม่พบรายการผิดปกติที่เกิดซ้ำ</p>'}
                     </div>
-                    <button id="copy-report-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-sm hover:shadow-md inline-flex items-center justify-center gap-2">
-                        <i data-lucide="copy"></i> คัดลอกเนื้อหารายงาน
-                    </button>
                 `;
                 summaryContent.classList.remove('hidden');
-                lucide.createIcons();
+                
+                const toggleDetails = (type, details) => {
+                    const container = document.getElementById(`${type}-details`);
+                    if (container.classList.contains('show')) {
+                        container.classList.remove('show');
+                        return;
+                    }
+                    document.querySelectorAll('.report-details-container').forEach(c => c.classList.remove('show'));
 
-                document.getElementById('copy-report-btn').addEventListener('click', (e) => {
-                    navigator.clipboard.writeText(reportTextForCopy).then(() => {
-                        e.currentTarget.innerHTML = '<i data-lucide="check"></i> คัดลอกแล้ว!';
-                        setTimeout(() => {
-                            e.currentTarget.innerHTML = '<i data-lucide="copy"></i> คัดลอกเนื้อหารายงาน';
-                            lucide.createIcons();
-                        }, 2000);
-                        lucide.createIcons();
+                    let listHTML = `<ul class="report-details-list">`;
+                    details.forEach(detail => {
+                        listHTML += `<li><div class="issue-date">วันที่: ${DateHandler.formatDate(DateHandler.parseDate(detail.date))}</div><div class="issue-message">${detail.issueHTML}</div></li>`;
                     });
-                });
+                    listHTML += '</ul>';
+                    container.innerHTML = listHTML;
+                    container.classList.add('show');
+                };
+
+                if (criticalDetails.length > 0) {
+                    document.getElementById('critical-summary').addEventListener('click', () => toggleDetails('critical', criticalDetails));
+                }
+                if (warningDetails.length > 0) {
+                    document.getElementById('warning-summary').addEventListener('click', () => toggleDetails('warning', warningDetails));
+                }
             });
         }
         

@@ -21,7 +21,6 @@
         }
         .text-header { 
             color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-            /* IMPROVEMENT #3: Prevent header text from overflowing */
             overflow-wrap: break-word;
             word-break: break-word;
         }
@@ -37,7 +36,7 @@
             font-size: 1.5rem; color: var(--text-dark); background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.2)); 
             border: 1px solid rgba(255,255,255,0.7);
         }
-        .sticky-header { position: sticky; top: 0; background: rgba(240, 253, 244, 0.85); backdrop-filter: blur(10px); z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .sticky-header { position: sticky; top: 0; background: rgba(240, 253, 244, 0.9); backdrop-filter: blur(10px); z-index: 10; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 200; transition: opacity 0.5s ease; }
         .loader { width: 60px; height: 60px; border-radius: 50%; border: 5px solid rgba(0, 121, 107, 0.2); border-top-color: var(--text-light); animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -49,8 +48,7 @@
         .checkbox-list label:hover { background-color: rgba(0, 121, 107, 0.1); }
         
         #managementReportDialog .checkbox-list {
-            bottom: 100%;
-            margin-bottom: 4px;
+            bottom: 100%; margin-bottom: 4px;
         }
 
         .details-row { display: none; }
@@ -59,20 +57,16 @@
         .details-item { display: flex; justify-content: space-between; align-items: center; }
         .details-item .topic { font-weight: 500; color: var(--text-light); padding: 0.25rem 0.75rem; background-color: rgba(0, 121, 107, 0.08); border-radius: 99px; }
         .details-item .result { font-weight: 600; text-align: right; }
-        .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; }
+        .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
         
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
             border-radius: 2.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
-            max-width: 95vw; 
-            width: auto;
-            overflow: hidden;
+            max-width: 95vw; width: auto; overflow: hidden;
         }
         @media (min-width: 640px) {
-            dialog {
-                width: 750px;
-            }
+            dialog { width: 750px; }
         }
         
         dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -102,50 +96,8 @@
         .fab { width: 60px; height: 60px; border-radius: 50%; background-color: var(--accent); color: white; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer; border: none; }
         .fab:hover { background-color: var(--text-light); transform: translateY(-3px) scale(1.05); }
 
-        @media (max-width: 767px) {
-            .responsive-table {
-                overflow: hidden;
-            }
-            .responsive-table thead {
-                display: none;
-            }
-            .responsive-table tbody tr {
-                display: block;
-                background-color: rgba(255,255,255,0.4);
-                border: 1px solid rgba(0, 121, 107, 0.1);
-                border-radius: 12px;
-                padding: 1rem;
-                margin-bottom: 1rem;
-                box-shadow: 0 4px 12px rgba(0, 77, 64, 0.05);
-            }
-            .responsive-table tbody td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.6rem 0.25rem;
-                text-align: right;
-                border-bottom: 1px dotted rgba(0, 121, 107, 0.2);
-            }
-            .responsive-table tbody tr td:last-child {
-                border-bottom: none;
-            }
-            .responsive-table tbody td:before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: var(--text-light);
-                text-align: left;
-                margin-right: 1rem;
-                flex-shrink: 0;
-            }
-            .responsive-table .actions-cell {
-                justify-content: flex-start;
-                gap: 0.5rem;
-                padding-top: 0.75rem;
-            }
-            .responsive-table .actions-cell:before {
-                display: none;
-            }
-        }
+        /* IMPROVEMENT #2: Removed responsive table CSS to revert to desktop-like table view. */
+        /* Horizontal scrolling is now handled by the `overflow-x-auto` class on the container div. */
     </style>
 </head>
 <body class="text-gray-800">
@@ -200,15 +152,15 @@
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="activity" class="mr-2"></i>แนวโน้มรอบเครื่องยนต์ (RPM)</h2><div id="engine-speed-chart"></div></div>
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="pie-chart" class="mr-2"></i>ภาพรวมการตรวจสอบ</h2><div id="overview-chart"></div></div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="fuel" class="mr-2"></i>ระดับน้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
-                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="thermometer" class="mr-2"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
-                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="droplets" class="mr-2"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
-                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="battery-charging" class="mr-2"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
+            <div class="grid grid-cols-4 gap-2 mb-8">
+                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="fuel" class="mr-1 h-4 w-4"></i>น้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
+                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="thermometer" class="mr-1 h-4 w-4"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
+                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="droplets" class="mr-1 h-4 w-4"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
+                <div class="glass-card p-2 md:p-4 text-center"><h2 class="text-xs sm:text-base font-semibold mb-2 flex items-center justify-center"><i data-lucide="battery-charging" class="mr-1 h-4 w-4"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
             </div>
             <div class="glass-card p-6" style="margin-bottom: 80px;">
                 <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-lucide="history" class="mr-2"></i>ประวัติการตรวจสอบ</h2>
-                <div class="responsive-table">
+                <div class="overflow-x-auto">
                     <table class="w-full text-sm"><thead class="text-xs uppercase sticky-header"><tr id="table-header"></tr></thead><tbody id="table-body" class="text-gray-700"></tbody></table>
                 </div>
             </div>
@@ -223,8 +175,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // NOTE: The only change in the script is inside `populateHistoryTable` to handle long names.
-        // All other logic remains identical.
+        // NOTE: JS logic remains the same, only presentation-related parts are adjusted.
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
         let allRecords = [];
         let filteredRecords = [];
@@ -262,14 +213,16 @@
                 legend: { labels: { colors: '#004d40' } },
                 noData: { text: 'ไม่พบข้อมูลสำหรับช่วงเวลานี้', align: 'center', verticalAlign: 'middle' }
             };
+            
+            // IMPROVEMENT #1: Adjusted radial chart options for compact view
             const radialOptions = {
-                chart: { type: 'radialBar', height: 250 },
+                chart: { type: 'radialBar', height: 160, sparkline: { enabled: true } }, // Smaller height and sparkline mode
                 plotOptions: {
                     radialBar: {
-                        hollow: { size: '60%' },
+                        hollow: { size: '55%' },
                         dataLabels: {
-                            name: { show: true, fontSize: '14px', offsetY: -10, color: 'rgba(0,77,64,0.6)' },
-                            value: { offsetY: 5, color: '#004d40', fontSize: '24px' }
+                            name: { show: true, fontSize: '11px', offsetY: -8, color: 'rgba(0,77,64,0.6)' },
+                            value: { offsetY: 2, color: '#004d40', fontSize: '18px' }
                         },
                         track: { background: 'rgba(0,121,107,0.1)' }
                     }
@@ -354,19 +307,11 @@
             createGauge("#pressure-gauge-chart", ["แรงดันน้ำ", "pressure"], " PSI", '#689f38', allData);
             createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
         }
-
-        // IMPROVEMENT #2: Function to truncate long lists of names
-        const formatNames = (nameString) => {
-            if (!nameString || typeof nameString !== 'string') return '';
-            const names = nameString.split(/\s+/).filter(Boolean); // Split by any whitespace and remove empty entries
-            if (names.length <= 1) {
-                return nameString;
-            }
-            return `${names[0]} +${names.length - 1}`;
-        };
-
-        function populateHistoryTable(data,headers){const t=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=t.map(e=>`<th class="px-4 py-3 text-left font-semibold">${abbreviateHeader(e)}</th>`).join('')+'<th class="px-4 py-3 text-left font-semibold">Actions</th>';let a="";data.forEach((s,r)=>{a+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${r}">`,t.forEach(e=>{const i=headers.find(t=>t.toLowerCase().startsWith(e.toLowerCase()))||e;let l=s[i];let o=null==l?"":l;const d=abbreviateHeader(e);"Actual"===e?o=DateHandler.formatDate(DateHandler.parseDate(l)):"ผู้ปฏิบัติงาน"===e||"ผู้ตรวจสอบ"===e?o=formatNames(l):null;a+=`<td class="px-4 py-3" data-label="${d}">${o}</td>`}),a+=`<td class="px-4 py-3 flex items-center gap-2 actions-cell"><button class="toggle-details" data-target="${r}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${r}">🤖 วิเคราะห์</button></td></tr>`,a+=`<tr class="details-row" id="details-${r}"><td colspan="${t.length+1}" class="details-cell"><div class="details-grid">`,headers.filter(e=>!t.some(t=>e.toLowerCase().startsWith(t.toLowerCase()))&&"Plan"!==e).forEach(e=>{const t=abbreviateHeader(e);let i=s[e]||"-";["เปลี่ยน","วันที่","แผน"].some(e=>t.includes(e))&&DateHandler.parseDate(s[e])&&(i=DateHandler.formatDate(DateHandler.parseDate(s[e]))),a+=`<div class="details-item"><span class="topic">${t}</span><span class="result">${i}</span></div>`}),a+="</div></td></tr>"}),document.getElementById("table-body").innerHTML=a,document.querySelectorAll(".toggle-details").forEach(e=>{e.addEventListener("click",t=>{const a=t.target.dataset.target,s=document.getElementById(`details-${a}`);s&&("table-row"===s.style.display?(s.style.display="none",t.target.textContent="📄 ดู"):(s.style.display="table-row",t.target.textContent="📄 ซ่อน"))})}),document.querySelectorAll(".ai-analyze-btn").forEach(e=>{e.addEventListener("click",e=>{runAiAnalysis(parseInt(e.currentTarget.dataset.rowIndex,10))})})}
         
+        // IMPROVEMENT #2: Reverted populateHistoryTable to create a standard table.
+        // Removed `formatNames` and `data-label` as they are no longer needed.
+        function populateHistoryTable(data,headers){const t=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=t.map(e=>`<th class="px-2 py-3 text-left font-semibold whitespace-nowrap">${abbreviateHeader(e)}</th>`).join('')+'<th class="px-2 py-3 text-left font-semibold">Actions</th>';let a="";data.forEach((s,r)=>{a+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${r}">`,t.forEach(e=>{const t=headers.find(t=>t.toLowerCase().startsWith(e.toLowerCase()))||e;let i=s[t];let l=null==i?"":i;"Actual"===t&&(l=DateHandler.formatDate(DateHandler.parseDate(i)));a+=`<td class="px-2 py-2 whitespace-nowrap">${l}</td>`}),a+=`<td class="px-2 py-2 flex items-center gap-2"><button class="toggle-details" data-target="${r}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${r}">🤖 วิเคราะห์</button></td></tr>`,a+=`<tr class="details-row" id="details-${r}"><td colspan="${t.length+1}" class="details-cell"><div class="details-grid">`,headers.filter(e=>!t.some(t=>e.toLowerCase().startsWith(t.toLowerCase()))&&"Plan"!==e).forEach(e=>{const t=abbreviateHeader(e);let i=s[e]||"-";["เปลี่ยน","วันที่","แผน"].some(e=>t.includes(e))&&DateHandler.parseDate(s[e])&&(i=DateHandler.formatDate(DateHandler.parseDate(s[e]))),a+=`<div class="details-item"><span class="topic">${t}</span><span class="result">${i}</span></div>`}),a+="</div></td></tr>"}),document.getElementById("table-body").innerHTML=a,document.querySelectorAll(".toggle-details").forEach(e=>{e.addEventListener("click",t=>{const a=t.target.dataset.target,s=document.getElementById(`details-${a}`);s&&("table-row"===s.style.display?(s.style.display="none",t.target.textContent="📄 ดู"):(s.style.display="table-row",t.target.textContent="📄 ซ่อน"))})}),document.querySelectorAll(".ai-analyze-btn").forEach(e=>{e.addEventListener("click",e=>{runAiAnalysis(parseInt(e.currentTarget.dataset.rowIndex,10))})})}
+
         function createCheckboxFilter(containerId, options, type) {
             const container = document.getElementById(containerId);
             if (!container) return;

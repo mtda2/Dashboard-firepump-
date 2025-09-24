@@ -43,7 +43,7 @@
         .custom-filter { position: relative; }
         .filter-button { background-color: rgba(255, 255, 255, 0.3); border: 1px solid rgba(0, 121, 107, 0.3); border-radius: 8px; color: var(--text-dark); padding: 0.5rem 1rem; width: 100%; text-align: left; }
         
-        /* UPDATED: Unified dropdown style to always open downwards */
+        /* [FIX #3] Dropdown opens downwards */
         .checkbox-list { 
             display: none; 
             position: absolute; 
@@ -81,7 +81,7 @@
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
         
-        /* RE-CONFIRMED FIX: Ensure dialog has NO overflow: hidden */
+        /* [FIX #1] Removed `overflow:hidden` from dialog to allow dropdowns to show. */
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
             border-radius: 1.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
@@ -91,7 +91,7 @@
         
         dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         
-        /* RE-CONFIRMED FIX: Robust structure for all dialog content */
+        /* [FIX #2] New robust structure for all dialog content to fix mobile view and scrolling. */
         .dialog-content-wrapper { padding: 1rem 1.5rem; display: flex; flex-direction: column; height: 100%; max-height: 85vh; }
         .dialog-header { display: flex; align-items: center; border-bottom: 1px solid rgba(200, 220, 210, 0.8); padding-bottom: 1rem; margin-bottom: 1rem; flex-shrink: 0; }
         .dialog-body-scrollable { flex-grow: 1; overflow-y: auto; padding-right: 0.5rem; }
@@ -562,6 +562,7 @@
                 }
             }
             const dialog = document.getElementById('aiDialog');
+            // [FIX #2] Apply the robust dialog structure
             dialog.innerHTML = `<div class="dialog-content-wrapper">
                 <div class="dialog-header">
                     <svg class="ai-avatar" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="100" fill="url(#avatar-bg-gradient)"/><g transform="translate(0, 10)"><path d="M85,150 L80,170 L120,170 L115,150 Z" fill="#4B5563"/><path d="M80,140 C80,155 120,155 120,140 L125,130 L75,130 Z" fill="#6B7280"/><path d="M60,135 L50,80 Q50,30 100,30 Q150,30 150,80 L140,135 Z" fill="url(#face-plate-gradient)" stroke="#4B5563" stroke-width="3"/><path d="M70 75 L80 65 L100 65 L105 75 L100 85 L80 85 Z" fill="#00796b" stroke="white" stroke-width="2"/><path d="M130 75 L120 65 L100 65 L95 75 L100 85 L120 85 Z" fill="#00796b" stroke="white" stroke-width="2" transform="matrix(-1, 0, 0, 1, 200, 0)"/><path d="M90,50 L110,50 M100,50 L100,40 M95,45 L105,45" stroke="#00796b" stroke-width="2.5" stroke-linecap="round"/><path d="M80,100 L120,100 L115,125 L85,125 Z" fill="#9CA3AF" stroke="#4B5563" stroke-width="2"/><line x1="85" y1="112" x2="115" y2="112" stroke="#6B7280" stroke-width="2"/></g><defs><linearGradient id="avatar-bg-gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#00796b"/><stop offset="1" stop-color="#26a69a"/></linearGradient><linearGradient id="face-plate-gradient" x1="100" y1="20" x2="100" y2="180" gradientUnits="userSpaceOnUse"><stop stop-color="#F2F2F7"/><stop offset="1" stop-color="#E5E5EA"/></linearGradient></defs></svg>
@@ -587,6 +588,7 @@
             const dialog = document.getElementById('managementReportDialog');
             const years = [...new Set(allRecords.map(r => DateHandler.parseDate(r.Actual).getFullYear()))].sort((a,b) => b-a);
             
+            // [FIX #2] Apply the robust dialog structure
             dialog.innerHTML = `<div class="dialog-content-wrapper">
                 <div class="dialog-header">
                     <i data-lucide="file-text" class="text-teal-600"></i>

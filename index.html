@@ -80,7 +80,7 @@
         
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
-        
+
         /* [FIX #1] Removed `overflow:hidden` from dialog to allow dropdowns to show. */
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
@@ -341,7 +341,7 @@
             createGauge("#pressure-gauge-chart", ["แรงดันน้ำ", "pressure"], " PSI", '#689f38', allData);
             createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
         }
-        
+
         function populateHistoryTable(data,headers){const mainColumns=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=mainColumns.map(colName=>`<th class="px-1 py-3 text-left font-semibold whitespace-nowrap text-xs">${abbreviateHeader(colName)}</th>`).join('')+'<th class="px-1 py-3 text-left font-semibold text-xs">Actions</th>';let tableHtml="";data.forEach((row,rowIndex)=>{tableHtml+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${rowIndex}">`;mainColumns.forEach(colName=>{const headerKey=headers.find(h=>h.toLowerCase().startsWith(colName.toLowerCase()))||colName;let rawValue=row[headerKey];let formattedValue=null==rawValue?"":rawValue;"Actual"===colName&&(formattedValue=DateHandler.formatDate(DateHandler.parseDate(rawValue)));tableHtml+=`<td class="px-1 py-2 whitespace-nowrap text-xs">${formattedValue}</td>`});tableHtml+=`<td class="px-1 py-2 flex items-center gap-1"><button class="toggle-details" data-target="${rowIndex}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${rowIndex}">🤖 วิเคราะห์</button></td></tr>`;tableHtml+=`<tr class="details-row" id="details-${rowIndex}"><td colspan="${mainColumns.length+1}" class="details-cell"><div class="details-grid">`;headers.filter(header=>!mainColumns.some(colName=>header.toLowerCase().startsWith(colName.toLowerCase()))&&"Plan"!==header).forEach(header=>{const topic=abbreviateHeader(header);let result=row[header]||"-";["เปลี่ยน","วันที่","แผน"].some(val=>topic.includes(val))&&DateHandler.parseDate(row[header])&&(result=DateHandler.formatDate(DateHandler.parseDate(row[header])));tableHtml+=`<div class="details-item"><span class="topic">${topic}</span><span class="result">${result}</span></div>`});tableHtml+="</div></td></tr>"});document.getElementById("table-body").innerHTML=tableHtml;document.querySelectorAll(".toggle-details").forEach(btn=>{btn.addEventListener("click",event=>{const targetIndex=event.target.dataset.target,detailsRow=document.getElementById(`details-${targetIndex}`);detailsRow&&("table-row"===detailsRow.style.display?(detailsRow.style.display="none",event.target.textContent="📄 ดู"):(detailsRow.style.display="table-row",event.target.textContent="📄 ซ่อน"))})});document.querySelectorAll(".ai-analyze-btn").forEach(btn=>{btn.addEventListener("click",event=>{runAiAnalysis(parseInt(event.currentTarget.dataset.rowIndex,10))})})}
 
         function createCheckboxFilter(containerId, options, type) {

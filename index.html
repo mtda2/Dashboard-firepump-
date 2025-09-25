@@ -20,12 +20,12 @@
             background-repeat: no-repeat; background-attachment: fixed; color: var(--text-dark);
         }
         .text-header { 
-            color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-            overflow-wrap: break-word; word-break: break-word;
+            color: var(--text-dark); 
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
         .glass-card { 
             background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.7); 
+            border-radius: 1.25rem; border: 1px solid rgba(255, 255, 255, 0.7); 
             box-shadow: 0 8px 32px rgba(0, 77, 64, 0.1), inset 0 1px 2px rgba(255,255,255,0.9);
             transition: all 0.3s ease;
         }
@@ -43,25 +43,19 @@
         .custom-filter { position: relative; }
         .filter-button { background-color: rgba(255, 255, 255, 0.3); border: 1px solid rgba(0, 121, 107, 0.3); border-radius: 8px; color: var(--text-dark); padding: 0.5rem 1rem; width: 100%; text-align: left; }
         
-        /* [FIX #3] Dropdown opens downwards */
-        .checkbox-list { 
-            display: none; 
-            position: absolute; 
+        .filter-dropdown-list { 
+            position: fixed;
             background: #f0fdf4; 
             border: 1px solid #b2dfdb; 
             backdrop-filter: blur(10px); 
             border-radius: 8px; 
             padding: 0.5rem; 
-            z-index: 100; 
             max-height: 200px; 
             overflow-y: auto; 
-            width: 100%; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            top: 100%; 
-            margin-top: 4px;
         }
-        .checkbox-list label { display: block; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-dark); }
-        .checkbox-list label:hover { background-color: rgba(0, 121, 107, 0.1); }
+        .filter-dropdown-list label { display: block; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; color: var(--text-dark); white-space: nowrap;}
+        .filter-dropdown-list label:hover { background-color: rgba(0, 121, 107, 0.1); }
         
         .details-row { display: none; }
         .details-cell { padding: 1rem; background-color: rgba(0, 121, 107, 0.03); }
@@ -81,20 +75,25 @@
         .toggle-details, .ai-analyze-btn { cursor: pointer; color: var(--accent); font-weight: 600; background: none; border: none; padding: 4px 8px; border-radius: 6px; transition: background-color 0.2s; white-space: nowrap; }
         .toggle-details:hover, .ai-analyze-btn:hover { background-color: rgba(0, 121, 107, 0.1); }
 
-        /* [FIX #1] Removed `overflow:hidden` from dialog to allow dropdowns to show. */
         dialog { 
             border: none; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border-radius: 1.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); padding: 0; 
-            max-width: 95vw; width: auto; max-height: 85vh;
+            border-radius: 1.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 95vw; width: 750px; max-height: 90vh;
+            display: flex; flex-direction: column; padding: 0; 
+            overflow: hidden;
         }
-        @media (min-width: 640px) { dialog { width: 750px; border-radius: 2.5rem;} }
+        @media (min-width: 640px) { dialog { border-radius: 2.5rem; } }
         
-        dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        dialog::backdrop { background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 199;}
         
-        /* [FIX #2] New robust structure for all dialog content to fix mobile view and scrolling. */
-        .dialog-content-wrapper { padding: 1rem 1.5rem; display: flex; flex-direction: column; height: 100%; max-height: 85vh; }
-        .dialog-header { display: flex; align-items: center; border-bottom: 1px solid rgba(200, 220, 210, 0.8); padding-bottom: 1rem; margin-bottom: 1rem; flex-shrink: 0; }
-        .dialog-body-scrollable { flex-grow: 1; overflow-y: auto; padding-right: 0.5rem; }
+        .dialog-header { 
+            display: flex; align-items: center; 
+            border-bottom: 1px solid rgba(200, 220, 210, 0.8); 
+            padding: 1.5rem 2rem; flex-shrink: 0;
+        }
+        .dialog-content { 
+            flex-grow: 1; overflow-y: auto; padding: 1rem 2rem; min-height: 0;
+        }
         
         .ai-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); flex-shrink: 0; }
         .header-gradient-text { background: linear-gradient(90deg, #00796b, #26a69a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -116,9 +115,6 @@
         .summary-item { background: rgba(255,255,255,0.5); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.7);}
         .summary-item .label { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.25rem;}
         .summary-item .value { font-size: 1.2rem; font-weight: 600; color: var(--text-dark);}
-        .fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 50; }
-        .fab { width: 60px; height: 60px; border-radius: 50%; background-color: var(--accent); color: white; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer; border: none; }
-        .fab:hover { background-color: var(--text-light); transform: translateY(-3px) scale(1.05); }
         .summary-item.clickable { cursor: pointer; transition: background-color 0.2s; }
         .summary-item.clickable:hover { background-color: rgba(0, 121, 107, 0.1); }
         .report-details-container {
@@ -128,8 +124,7 @@
         .report-details-container.show { max-height: 500px; overflow-y: auto;}
         .report-details-list { list-style-type: none; padding: 1rem; margin: 0; }
         .report-details-list li {
-            padding: 0.75rem; border-bottom: 1px solid rgba(0, 121, 107, 0.1);
-            font-size: 0.9rem;
+            padding: 0.75rem; border-bottom: 1px solid rgba(0, 121, 107, 0.1); font-size: 0.9rem;
         }
         .report-details-list li:last-child { border-bottom: none; }
         .report-details-list .issue-date { font-weight: 600; color: var(--text-light); }
@@ -148,9 +143,9 @@
 
     <div class="container mx-auto p-4 lg:p-6">
         <header class="text-center mb-8">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 flex-wrap">
+             <div class="flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
                 <div>
-                    <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="sm:w-[100px] sm:h-[100px]">
+                    <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="32" cy="32" r="29" stroke="#00796b" stroke-width="2.5" />
                         <path d="M32 50C22.0588 50 14 41.9411 14 32C14 24.5327 18.3553 18.0278 24.5 14.5" stroke="#26a69a" stroke-width="2.5" stroke-linecap="round"/>
                         <path d="M32.0011 11.0001L40.0469 36.52L44.8298 32.8365" stroke="#004d40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -158,7 +153,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold mb-2 text-header">แดชบอร์ด Fire Pump</h1>
+                    <h1 class="text-4xl lg:text-5xl font-bold mb-2 text-header">แดชบอร์ด Fire Pump</h1>
                     <p id="system-time" class="text-sm opacity-70"></p>
                 </div>
             </div>
@@ -166,19 +161,23 @@
         
         <div class="relative z-20">
             <div class="glass-card p-4 mb-8">
-                <div class="flex flex-col sm:flex-row flex-wrap items-end gap-4">
-                    <div class="w-full sm:flex-grow min-w-[180px]"><label class="block text-sm font-medium mb-1">เลือกปี (พ.ศ.):</label><div id="year-filter" class="custom-filter"></div></div>
-                    <div class="w-full sm:flex-grow min-w-[180px]"><label class="block text-sm font-medium mb-1">เลือกเดือน:</label><div id="month-filter" class="custom-filter"></div></div>
-                    <div class="w-full sm:w-auto flex items-end gap-2">
-                        <button id="apply-filter-btn" class="flex-1 sm:flex-none bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm hover:shadow-md">แสดงผล</button>
-                        <button id="reset-filter-btn" class="flex-1 sm:flex-none bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm hover:shadow-md">รีเซ็ต</button>
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex-grow min-w-[200px]"><label class="block text-sm font-medium mb-1">เลือกปี (พ.ศ.):</label><div id="year-filter" class="custom-filter"></div></div>
+                    <div class="flex-grow min-w-[200px]"><label class="block text-sm font-medium mb-1">เลือกเดือน:</label><div id="month-filter" class="custom-filter"></div></div>
+                    
+                    <div class="flex-shrink-0 flex items-end gap-2 flex-wrap">
+                        <button id="executive-report-btn" class="bg-white hover:bg-teal-50 text-teal-600 font-bold py-2 px-4 rounded-lg transition-colors shadow-sm hover:shadow-md flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>สร้างรายงาน
+                        </button>
+                        <button id="reset-filter-btn" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm hover:shadow-md">รีเซ็ต</button>
+                        <button id="apply-filter-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm hover:shadow-md">แสดงผล</button>
                     </div>
                 </div>
             </div>
         </div>
         
         <div id="dashboard-content" class="relative z-10 opacity-0 transition-opacity duration-500">
-             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="shield-check"></i></div><p class="text-sm mb-1 opacity-70">สถานะระบบ</p><p id="system-status" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-check"></i></div><p class="text-sm mb-1 opacity-70">ตรวจสอบล่าสุด</p><p id="last-inspection-date" class="text-2xl font-bold"></p></div>
                 <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-clock"></i></div><p class="text-sm mb-1 opacity-70">แผน PM ถัดไป</p><p id="next-pm-date" class="text-2xl font-bold"></p></div>
@@ -188,11 +187,11 @@
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="activity" class="mr-2"></i>แนวโน้มรอบเครื่องยนต์ (RPM)</h2><div id="engine-speed-chart"></div></div>
                 <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="pie-chart" class="mr-2"></i>ภาพรวมการตรวจสอบ</h2><div id="overview-chart"></div></div>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="fuel" class="mr-2"></i>ระดับน้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
-                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="thermometer" class="mr-2"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
-                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="droplets" class="mr-2"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
-                <div class="glass-card p-4 md:p-6"><h2 class="text-base sm:text-lg lg:text-xl font-semibold mb-4 flex items-center"><i data-lucide="battery-charging" class="mr-2"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="fuel" class="mr-2"></i>ระดับน้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
+                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="thermometer" class="mr-2"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
+                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="droplets" class="mr-2"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
+                <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="battery-charging" class="mr-2"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
             </div>
             <div class="glass-card p-6" style="margin-bottom: 80px;">
                 <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-lucide="history" class="mr-2"></i>ประวัติการตรวจสอบ</h2>
@@ -202,593 +201,591 @@
             </div>
         </div>
     </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
+    let allRecords = [];
+    let filteredRecords = [];
+    const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+    const domCache = {
+        dashboardContent: document.getElementById('dashboard-content'),
+        loaderOverlay: document.getElementById('loader-overlay'),
+        loaderText: document.getElementById('loader-text'),
+        aiDialog: document.getElementById('aiDialog'),
+        managementReportDialog: document.getElementById('managementReportDialog')
+    };
     
-    <div class="fab-container">
-        <button id="executive-report-btn" class="fab" title="สร้างรายงาน">
-            <i data-lucide="file-text"></i>
-        </button>
-    </div>
+    domCache.aiDialog.addEventListener('close', () => { domCache.aiDialog.innerHTML = ''; });
+    domCache.managementReportDialog.addEventListener('close', () => { domCache.managementReportDialog.innerHTML = ''; });
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby-MPG-LgjRv5W06FtSvckhVzeMbkUhKMr5iJVvdmFNwTZHbDp5pcX4vgD2ynrTk4BG/exec";
-        let allRecords = [];
-        let filteredRecords = [];
-        const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+    // [REFACTORED] Un-minified for readability
+    class DateHandler {
+        static parseDate(dateString) {
+            const trimmedString = String(dateString || "").trim();
+            if (!trimmedString) return null;
 
-        class DateHandler {
-            static parseDate(e){const t=String(e||"").trim();if(!t)return null;if(t.includes("T")){const e=new Date(t);return e&&!isNaN(e.getTime())?e:null}const a=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(a){const e=parseInt(a[1],10),t=parseInt(a[2],10);let s=parseInt(a[3],10);return s<100&&(s+=2500),s>1e3&&(s-=543),new Date(s,t-1,e)}const s=new Date(t);return s&&!isNaN(s.getTime())?s:null}
-            static formatDate(e){if(!e||isNaN(e.getTime()))return"-";const t=String(e.getDate()).padStart(2,"0"),a=String(e.getMonth()+1).padStart(2,"0"),s=(e.getFullYear()+543).toString().slice(-2);return`${t}/${a}/${s}`}
-            static addMonth(e){if(!e||isNaN(e.getTime()))return null;const t=new Date(e);return t.setMonth(t.getMonth()+1),t}
-        }
-
-        const abbreviateHeader=(h)=>String(h).replace(/\s\(STD.*\)/,'').replace(/\s\/.*/,'').trim();
-        const parseStd=(h)=>{const s=String(h||'').trim().match(/STD\.\s?(.*)\)/);if(!s)return null;const t=s[1].trim(),n=t.match(/ไม่ต่ำกว่า\s?(\d+(\.\d+)?)/);if(n)return{type:'min',value:parseFloat(n[1])};const a=t.match(/(\d+(\.\d+)?)\s?-\s?(\d+(\.\d+)?)/);return a?{type:'range',min:parseFloat(a[1]),max:parseFloat(a[3])}:null};
-        const checkValueAgainstStd=(v,r)=>{const s=String(v||'');if(!r||s.trim()===''||s.trim()==='-')return!0;const abnormalKeywords=['ผิดปกติ','ไม่ปกติ','ชำรุด','ต่ำ','รั่ว'],t=s.toLowerCase();if(abnormalKeywords.some(e=>t.includes(e)))return!1;const n=['ปกติ','พร้อมใช้งาน','แน่น','ใส','ไม่มี'];if(n.some(e=>t.includes(e)))return!0;const a=parseFloat(s.replace(/,/g,''));if(isNaN(a))return!0;switch(r.type){case'range':return a>=r.min&&a<=r.max;case'min':return a>=r.value;default:return!0}};
-
-        function setupKpiCards(latest,headers){const e=latest[headers.find(e=>e.startsWith("Check All Safety Devices"))]==="พร้อมใช้งาน";document.getElementById("system-status").textContent=e?"พร้อมใช้งาน":"ต้องตรวจสอบ",document.getElementById("system-status").style.color=e?"var(--color-ok)":"var(--color-danger)";const t=DateHandler.parseDate(latest.Actual);document.getElementById("last-inspection-date").textContent=DateHandler.formatDate(t),document.getElementById("next-pm-date").textContent=DateHandler.formatDate(DateHandler.addMonth(t));let a=0;const s=headers.find(e=>e.startsWith("ISSUE"));latest[s]&&""!==String(latest[s]).toLowerCase().trim()&&"ไม่มี"!==String(latest[s]).toLowerCase().trim()&&a++,document.getElementById("issue-count").textContent=a,document.getElementById("issue-count").style.color=a>0?"var(--color-danger)":"var(--color-ok)"}
-        function getGaugeStatus(e,t){return"temperature"===t?e>100?{color:"var(--color-danger)",status:"สูงเกินไป"}:e>=80?{color:"var(--color-ok)",status:"ปกติ"}:e>=40?{color:"var(--color-warning)",status:"ต่ำกว่าเกณฑ์"}:{color:"var(--color-danger)",status:"ผิดปกติ"}:"battery"===t?e>15?{color:"var(--color-danger)",status:"สูงเกินไป"}:e>=12?{color:"var(--color-ok)",status:"ปกติ"}:{color:"var(--color-danger)",status:"ต่ำกว่ากำหนด"}:{color:null,status:""}}
-        
-        function renderCharts(chartData, latest, headers, allData) {
-            ['engine-speed-chart', 'overview-chart', 'fuel-gauge-chart', 'temp-gauge-chart', 'pressure-gauge-chart', 'battery-gauge-chart'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    const chart = ApexCharts.getChartByID(id);
-                    if (chart) chart.destroy()
-                }
-            });
-            const chartOptions = {
-                chart: { toolbar: { show: !1 }, zoom: { enabled: !1 }, background: 'transparent' },
-                theme: { mode: 'light' }, dataLabels: { enabled: !1 },
-                stroke: { curve: 'smooth', width: 3 },
-                grid: { borderColor: 'rgba(0,121,107,0.1)', strokeDashArray: 4 },
-                tooltip: { theme: 'light' },
-                xaxis: { labels: { style: { colors: '#004d40' } } },
-                yaxis: { labels: { style: { colors: '#004d40' } } },
-                legend: { labels: { colors: '#004d40' } },
-                noData: { text: 'ไม่พบข้อมูลสำหรับช่วงเวลานี้', align: 'center', verticalAlign: 'middle' }
-            };
-            
-            const radialOptions = {
-                chart: { type: 'radialBar', height: 250 },
-                plotOptions: {
-                    radialBar: {
-                        hollow: { size: '60%' },
-                        dataLabels: {
-                            name: { show: true, fontSize: '14px', offsetY: -10, color: 'rgba(0,77,64,0.6)' },
-                            value: { offsetY: 5, color: '#004d40', fontSize: '24px' }
-                        },
-                        track: { background: 'rgba(0,121,107,0.1)' }
-                    }
-                }
-            };
-            
-            const rpmKey = headers.find(h => h.toLowerCase().includes('engine speed'));
-            if (rpmKey) {
-                const std = parseStd(rpmKey);
-                const seriesData = chartData.map(d => ({
-                    x: DateHandler.parseDate(d.Actual)?.getTime(),
-                    y: parseInt(String(d[rpmKey] || '').replace(/,/g, ''), 10) || null
-                })).filter(i => i.x && i.y !== null);
-
-                let annotations = {};
-                if (std) {
-                    if (std.type === 'range') {
-                        annotations.yaxis = [{
-                            y: std.max,
-                            borderColor: '#f57c00',
-                            strokeDashArray: 2,
-                            label: {
-                                borderColor: '#f57c00',
-                                style: { color: '#fff', background: '#f57c00' },
-                                text: `STD Max: ${std.max} RPM`
-                            }
-                        }, {
-                            y: std.min,
-                            borderColor: '#fbc02d',
-                            strokeDashArray: 2,
-                            label: {
-                                borderColor: '#fbc02d',
-                                style: { color: '#fff', background: '#fbc02d' },
-                                text: `STD Min: ${std.min} RPM`
-                            }
-                        }];
-                    } else if (std.type === 'min') {
-                        annotations.yaxis = [{
-                            y: std.value,
-                            borderColor: '#f57c00',
-                            label: {
-                                borderColor: '#f57c00',
-                                style: { color: '#fff', background: '#f57c00' },
-                                text: `STD: ${std.value} RPM`
-                            }
-                        }];
-                    }
-                }
-                
-                new ApexCharts(document.querySelector("#engine-speed-chart"), {
-                    ...chartOptions,
-                    series: [{ name: 'RPM', data: seriesData }],
-                    chart: { id: 'engine-speed-chart', type: 'area', height: 350 },
-                    xaxis: { ...chartOptions.xaxis, type: 'datetime' },
-                    colors: ['#00796b'],
-                    fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 100] } },
-                    annotations: annotations
-                }).render();
+            if (trimmedString.includes("T")) {
+                const dateFromISO = new Date(trimmedString);
+                return dateFromISO && !isNaN(dateFromISO.getTime()) ? dateFromISO : null;
             }
 
-            let normal = 0, abnormal = 0;
-            headers.filter(h => h.includes('(STD.')).forEach(k => {
-                if (checkValueAgainstStd(latest[k], parseStd(k))) normal++;
-                else abnormal++;
-            });
-            new ApexCharts(document.querySelector("#overview-chart"), { ...chartOptions, series: [normal, abnormal], chart: { id: 'overview-chart', type: 'donut', height: 300 }, labels: ['ปกติ', 'ต้องตรวจสอบ'], colors: ['#2e7d32', '#d32f2f'], theme: { mode: 'light' }, legend: { position: 'bottom' }, plotOptions: { pie: { donut: { labels: { show: true, total: { show: true, label: 'รวม', color: '#004d40' } } } } } }).render();
-
-            const findLastValidValue = (records, keyParts) => {
-                const key = headers.find(h => keyParts.some(part => h.toLowerCase().includes(part)));
-                if (!key) return 0;
-                const record = records.find(r => r[key] != null && r[key] !== '' && !isNaN(parseFloat(String(r[key]).replace(/[^0-9.,-]+/g, ""))));
-                return record ? parseFloat(String(record[key]).replace(/[^0-9.,-]+/g, "")) : 0
-            };
-            const createGauge = (selector, keyParts, unit, defaultColor, records, type) => {
-                const value = findLastValidValue(records, keyParts);
-                const { color, status } = getGaugeStatus(value, type);
-                new ApexCharts(document.querySelector(selector), { ...radialOptions, series: [value], chart: { ...radialOptions.chart, id: selector.substring(1) }, plotOptions: { ...radialOptions.plotOptions, radialBar: { ...radialOptions.plotOptions.radialBar, dataLabels: { ...radialOptions.plotOptions.radialBar.dataLabels, name: { ...radialOptions.plotOptions.radialBar.dataLabels.name, show: !!status, text: status }, value: { ...radialOptions.plotOptions.radialBar.dataLabels.value, formatter: (v) => `${parseFloat(v).toFixed(1)}${unit}` } } } }, colors: [color || defaultColor] }).render()
-            };
-
-            createGauge("#fuel-gauge-chart", ["fuel tank"], '%', '#0288d1', allData);
-            createGauge("#temp-gauge-chart", ["cooling water temperature"], "°C", '#f57c00', allData, 'temperature');
-            createGauge("#pressure-gauge-chart", ["แรงดันน้ำ", "pressure"], " PSI", '#689f38', allData);
-            createGauge("#battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
-        }
-
-        function populateHistoryTable(data,headers){const mainColumns=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=mainColumns.map(colName=>`<th class="px-1 py-3 text-left font-semibold whitespace-nowrap text-xs">${abbreviateHeader(colName)}</th>`).join('')+'<th class="px-1 py-3 text-left font-semibold text-xs">Actions</th>';let tableHtml="";data.forEach((row,rowIndex)=>{tableHtml+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${rowIndex}">`;mainColumns.forEach(colName=>{const headerKey=headers.find(h=>h.toLowerCase().startsWith(colName.toLowerCase()))||colName;let rawValue=row[headerKey];let formattedValue=null==rawValue?"":rawValue;"Actual"===colName&&(formattedValue=DateHandler.formatDate(DateHandler.parseDate(rawValue)));tableHtml+=`<td class="px-1 py-2 whitespace-nowrap text-xs">${formattedValue}</td>`});tableHtml+=`<td class="px-1 py-2 flex items-center gap-1"><button class="toggle-details" data-target="${rowIndex}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${rowIndex}">🤖 วิเคราะห์</button></td></tr>`;tableHtml+=`<tr class="details-row" id="details-${rowIndex}"><td colspan="${mainColumns.length+1}" class="details-cell"><div class="details-grid">`;headers.filter(header=>!mainColumns.some(colName=>header.toLowerCase().startsWith(colName.toLowerCase()))&&"Plan"!==header).forEach(header=>{const topic=abbreviateHeader(header);let result=row[header]||"-";["เปลี่ยน","วันที่","แผน"].some(val=>topic.includes(val))&&DateHandler.parseDate(row[header])&&(result=DateHandler.formatDate(DateHandler.parseDate(row[header])));tableHtml+=`<div class="details-item"><span class="topic">${topic}</span><span class="result">${result}</span></div>`});tableHtml+="</div></td></tr>"});document.getElementById("table-body").innerHTML=tableHtml;document.querySelectorAll(".toggle-details").forEach(btn=>{btn.addEventListener("click",event=>{const targetIndex=event.target.dataset.target,detailsRow=document.getElementById(`details-${targetIndex}`);detailsRow&&("table-row"===detailsRow.style.display?(detailsRow.style.display="none",event.target.textContent="📄 ดู"):(detailsRow.style.display="table-row",event.target.textContent="📄 ซ่อน"))})});document.querySelectorAll(".ai-analyze-btn").forEach(btn=>{btn.addEventListener("click",event=>{runAiAnalysis(parseInt(event.currentTarget.dataset.rowIndex,10))})})}
-
-        function createCheckboxFilter(containerId, options, type) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const button = document.createElement('button');
-            button.className = 'filter-button';
-            button.textContent = `เลือก${type}...`;
-            const list = document.createElement('div');
-            list.className = 'checkbox-list';
-            options.forEach(opt => {
-                const label = document.createElement('label');
-                label.innerHTML = `<input type="checkbox" value="${opt.value}" class="mr-2 rounded text-teal-500 focus:ring-teal-400"> ${opt.text}`;
-                list.appendChild(label);
-            });
-            container.innerHTML = '';
-            container.append(button, list);
-            button.addEventListener('click', e => { e.stopPropagation(); list.style.display = list.style.display === 'block' ? 'none' : 'block'; });
-            document.addEventListener('click', e => { if (!container.contains(e.target)) { list.style.display = 'none'; } });
-        }
-        function populateFilters(records){const y=[...new Set(records.map(r=>DateHandler.parseDate(r.Actual).getFullYear()))].sort((a,b)=>b-a).map(y=>({value:y,text:y+543}));const m=thaiMonths.map((m,i)=>({value:i,text:m}));createCheckboxFilter('year-filter',y,'ปี');createCheckboxFilter('month-filter',m,'เดือน')}
-        
-        function applyFilters() {
-            const selectedYears = Array.from(document.querySelectorAll('#year-filter input:checked')).map(cb => parseInt(cb.value));
-            const selectedMonths = Array.from(document.querySelectorAll('#month-filter input:checked')).map(cb => parseInt(cb.value));
-            
-            filteredRecords = allRecords.filter(r => {
-                const date = DateHandler.parseDate(r.Actual);
-                if (!date) return false;
-                const yearMatch = selectedYears.length === 0 || selectedYears.includes(date.getFullYear());
-                const monthMatch = selectedMonths.length === 0 || selectedMonths.includes(date.getMonth());
-                return yearMatch && monthMatch;
-            });
-            renderDashboard(filteredRecords);
-        }
-
-        function renderDashboard(data) {
-            const content = document.getElementById('dashboard-content');
-            if (!data || data.length === 0) {
-                content.innerHTML = `<div class="text-center text-xl glass-card p-8">ไม่พบข้อมูลสำหรับช่วงเวลาที่เลือก</div>`;
-                content.classList.remove('opacity-0');
-                 ['fuel-gauge-chart','temp-gauge-chart','pressure-gauge-chart','battery-gauge-chart'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.innerHTML = '';
-                });
-                return;
+            const dmyMatch = trimmedString.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+            if (dmyMatch) {
+                const day = parseInt(dmyMatch[1], 10);
+                const month = parseInt(dmyMatch[2], 10);
+                let year = parseInt(dmyMatch[3], 10);
+                if (year < 100) year += 2500;
+                if (year > 1000) year -= 543; // Convert from BE to AD
+                return new Date(year, month - 1, day);
             }
-            const latest = data[0];
-            const headers = Object.keys(latest);
-            setupKpiCards(latest, headers);
-            renderCharts(data.slice().reverse(), latest, headers, data);
-            populateHistoryTable(data, headers);
-            lucide.createIcons();
-            content.classList.remove('opacity-0');
+            
+            const genericDate = new Date(trimmedString);
+            return genericDate && !isNaN(genericDate.getTime()) ? genericDate : null;
+        }
+
+        static formatDate(dateObject) {
+            if (!dateObject || isNaN(dateObject.getTime())) return "-";
+            const day = String(dateObject.getDate()).padStart(2, "0");
+            const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+            const year = (dateObject.getFullYear() + 543).toString().slice(-2);
+            return `${day}/${month}/${year}`;
+        }
+
+        static addMonth(dateObject) {
+            if (!dateObject || isNaN(dateObject.getTime())) return null;
+            const newDate = new Date(dateObject);
+            newDate.setMonth(newDate.getMonth() + 1);
+            return newDate;
+        }
+    }
+
+    // [REFACTORED] Un-minified for readability
+    const abbreviateHeader = (header) => String(header).replace(/\s\(STD.*\)/, '').replace(/\s\/.*/, '').trim();
+    const parseStd = (header) => {
+        const stdMatch = String(header || '').trim().match(/STD\.\s?(.*)\)/);
+        if (!stdMatch) return null;
+
+        const stdText = stdMatch[1].trim();
+        const minMatch = stdText.match(/ไม่ต่ำกว่า\s?(\d+(\.\d+)?)/);
+        if (minMatch) return { type: 'min', value: parseFloat(minMatch[1]) };
+
+        const rangeMatch = stdText.match(/(\d+(\.\d+)?)\s?-\s?(\d+(\.\d+)?)/);
+        return rangeMatch ? { type: 'range', min: parseFloat(rangeMatch[1]), max: parseFloat(rangeMatch[3]) } : null;
+    };
+    
+    // [REFACTORED] Un-minified for readability
+    const checkValueAgainstStd = (value, stdRule) => {
+        const valueString = String(value || '');
+        if (!stdRule || valueString.trim() === '' || valueString.trim() === '-') return true;
+
+        const abnormalKeywords = ['ผิดปกติ', 'ไม่ปกติ', 'ชำรุด', 'ต่ำ', 'รั่ว'];
+        if (abnormalKeywords.some(keyword => valueString.toLowerCase().includes(keyword))) return false;
+
+        const normalKeywords = ['ปกติ', 'พร้อมใช้งาน', 'แน่น', 'ใส', 'ไม่มี'];
+        if (normalKeywords.some(keyword => valueString.toLowerCase().includes(keyword))) return true;
+
+        const parsedValue = parseFloat(valueString.replace(/,/g, ''));
+        if (isNaN(parsedValue)) return true;
+
+        switch (stdRule.type) {
+            case 'range': return parsedValue >= stdRule.min && parsedValue <= stdRule.max;
+            case 'min': return parsedValue >= stdRule.value;
+            default: return true;
+        }
+    };
+
+    function setupKpiCards(latest, headers) {
+        const isReady = latest[headers.find(h => h.startsWith("Check All Safety Devices"))] === "พร้อมใช้งาน";
+        const statusElement = document.getElementById("system-status");
+        statusElement.textContent = isReady ? "พร้อมใช้งาน" : "ต้องตรวจสอบ";
+        statusElement.style.color = isReady ? "var(--color-ok)" : "var(--color-danger)";
+        
+        const lastCheckDate = DateHandler.parseDate(latest.Actual);
+        document.getElementById("last-inspection-date").textContent = DateHandler.formatDate(lastCheckDate);
+        document.getElementById("next-pm-date").textContent = DateHandler.formatDate(DateHandler.addMonth(lastCheckDate));
+        
+        let issueCount = 0;
+        const issueHeader = headers.find(h => h.startsWith("ISSUE"));
+        const issueValue = latest[issueHeader] ? String(latest[issueHeader]).toLowerCase().trim() : "";
+        if (issueValue && issueValue !== "ไม่มี") {
+            issueCount++;
         }
         
-        const headerToEntryIdMap = {
-            'Actual': 'entry.1632403651', 'ผู้ปฏิบัติงาน': 'entry.1231391232', 'PLAN': 'entry.994147210',
-            'Lubricating Oil Level': 'entry.1618028324', 'Cooling Water Level': 'entry.14334317',
-            'Battery Distilled Water Level': 'entry.1091386807', 'Fuel Tank Level': 'entry.964120987',
-            'Fuel Oil Leaks': 'entry.323305993', 'Lubricating Oil Leaks': 'entry.1072480311',
-            'Cooling Water Leaks': 'entry.1607591057', 'Tightness Of Bolts And Nuts': 'entry.719816448',
-            'Tightness Of Electrical Terminal Connections': 'entry.737194412', 'Air Cleaner': 'entry.1182164809',
-            'Fuel Filter Element': 'entry.950885152', 'Check Water Suction Tube': 'entry.824942619',
-            'Jocky Pump Test': 'entry.1298699451', 'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่ปั๊มเริ่มทำงาน': 'entry.170318696',
-            'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่ปั๊มหยุดทำงาน': 'entry.835390568', 'V Belts Condition': 'entry.380068157',
-            'Running Hours': 'entry.693422880', 'Engine RPM': 'entry.1405771031',
-            'Lubricating Oil Pressure': 'entry.1301900075', 'Lubricating Oil Temperature': 'entry.1118394468',
-            'Cooling Water Pressure': 'entry.278367378', 'Cooling Water Temperature': 'entry.1127101964',
-            'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่เครื่องยนต์เริ่มทำงาน': 'entry.797055912',
-            'แรงดันน้ำในท่อส่งน้ำดับเพลิงขณะเครื่องยนต์ทำงาน': 'entry.1506477567', 'การทำงานของไฟแสดงผล': 'entry.1316882575',
-            'Check Vibrations': 'entry.628997006', 'Check All Moving Parts For Abnormal Sounds': 'entry.1209254361',
-            'Flow Switch': 'entry.950605992', 'General Cleaning': 'entry.1459189432',
-            'Battery Charging Volt': 'entry.1833812342', 'Test Battery': 'entry.1502505224',
-            'Change Ludricating Oil': 'entry.376703834', 'Change Ludricating Oil Filter': 'entry.550562469',
-            'Change Air Filter': 'entry.964740712', 'Inspection For Any Sign Of Wburnmarks': 'entry.1952860784',
-            'Check Status Of All Indication': 'entry.1304076428', 'Check For General Operation & Condition': 'entry.1601277291',
-            'Check Casing Condition': 'entry.851234898', 'Dedusting': 'entry.362638249',
-            'Body,Cubicle&Racking Cleaning': 'entry.1151340514', 'Insulation Resistance Test & Grounding Checked': 'entry.1956843408',
-            'Tightening Of All Electrical Connection': 'entry.1745325661', 'Lubricate Mechanical Parts': 'entry.1547716680',
-            'Check All Safety Devices': 'entry.498232465', 'Check Fuses & Protection Device': 'entry.1443945119',
-            'Tightening Busbar Supports': 'entry.614621971', 'Check Communication for Building Automation System': 'entry.569091221',
-            'Check Communication for RUUor DDC to Building Automation System and Cleaning': 'entry.673310831',
-            'Check Status Lamp Show for Annuciator Panel': 'entry.1022996900', 'Record Voltage': 'entry.209108764',
-            'ISSUE': 'entry.129342865', 'CONDITION': 'entry.690163791', 'HISTORY RECCORD': 'entry.788703385',
-            'V Belts Condition/ตรวจเช็คการทำงานของสายพาน': 'entry.764561274'
+        const issueCountElement = document.getElementById("issue-count");
+        issueCountElement.textContent = issueCount;
+        issueCountElement.style.color = issueCount > 0 ? "var(--color-danger)" : "var(--color-ok)";
+    }
+    
+    function getGaugeStatus(value, type) {
+        if (type === "temperature") {
+            if (value > 100) return { color: "var(--color-danger)", status: "สูงเกินไป" };
+            if (value >= 80) return { color: "var(--color-ok)", status: "ปกติ" };
+            if (value >= 40) return { color: "var(--color-warning)", status: "ต่ำกว่าเกณฑ์" };
+            return { color: "var(--color-danger)", status: "ผิดปกติ" };
+        }
+        if (type === "battery") {
+            if (value > 15) return { color: "var(--color-danger)", status: "สูงเกินไป" };
+            if (value >= 12) return { color: "var(--color-ok)", status: "ปกติ" };
+            return { color: "var(--color-danger)", status: "ต่ำกว่ากำหนด" };
+        }
+        return { color: null, status: "" };
+    }
+    
+    function renderCharts(chartData, latest, headers, allData) {
+        const chartOptions = {
+            chart: { toolbar: { show: false }, zoom: { enabled: false }, background: 'transparent' },
+            theme: { mode: 'light' },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            grid: { borderColor: 'rgba(0,121,107,0.1)', strokeDashArray: 4 },
+            tooltip: { theme: 'light' },
+            xaxis: { labels: { style: { colors: '#004d40' } } },
+            yaxis: { labels: { style: { colors: '#004d40' } } },
+            legend: { labels: { colors: '#004d40' } },
+            noData: { text: 'ไม่พบข้อมูลสำหรับช่วงเวลานี้', align: 'center', verticalAlign: 'middle' }
+        };
+        const radialOptions = {
+            chart: { type: 'radialBar', height: 250 },
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '60%' },
+                    dataLabels: {
+                        name: { show: true, fontSize: '14px', offsetY: -10, color: 'rgba(0,77,64,0.6)' },
+                        value: { offsetY: 5, color: '#004d40', fontSize: '24px' }
+                    },
+                    track: { background: 'rgba(0,121,107,0.1)' }
+                }
+            }
         };
 
-        const analysisRules = {
-            'entry.1618028324':{label:'ระดับน้ำมันหล่อลื่น',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำมันหล่อลื่นต่ำกว่าเกณฑ์ปกติอย่างมีนัยสำคัญ<span class="engineering-note"><strong>ผลกระทบ:</strong> เสี่ยงต่อการสึกหรอของชิ้นส่วนภายในเครื่องยนต์อย่างรุนแรง (เช่น ลูกสูบ, แบริ่ง) อาจทำให้เครื่องยนต์น็อคและเสียหายถาวรได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำมันหล่อลื่นเกรดที่ถูกต้องตามสเปคผู้ผลิตให้อยู่ในระดับ Full ทันที และตรวจสอบหารอยรั่วซึม</span>`},
-            'entry.14334317':{label:'ระดับน้ำระบายความร้อน',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำในระบบหล่อเย็นต่ำกว่าระดับที่กำหนด<span class="engineering-note"><strong>ผลกระทบ:</strong> ประสิทธิภาพการระบายความร้อนลดลง ทำให้เครื่องยนต์เกิดภาวะ Overheat ซึ่งอาจนำไปสู่การเสียหายของปะเก็นฝาสูบหรือฝาสูบโก่งได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำยาหล่อเย็น (Coolant) ให้ได้ระดับ และตรวจสอบการรั่วซึมในระบบ เช่น ท่อยาง, หม้อน้ำ, และปั๊มน้ำ</span>`},
-            'entry.1091386807':{label:'ระดับน้ำกลั่นของแบตเตอรี่',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำกลั่นในแบตเตอรี่ต่ำกว่าระดับ Lower<span class="engineering-note"><strong>ผลกระทบ:</strong> แผ่นธาตุภายในแบตเตอรี่จะสัมผัสกับอากาศ เกิดปฏิกิริยาซัลเฟตเกาะที่แผ่นธาตุ ทำให้ความสามารถในการเก็บประจุลดลงอย่างถาวร และแบตเตอรี่เสื่อมสภาพก่อนเวลาอันควร</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำกลั่นบริสุทธิ์ (เท่านั้น) ให้อยู่ในระดับ Upper และตรวจสอบระบบการชาร์จว่ามีแรงดันสูงเกินไป (Overcharging) หรือไม่ ซึ่งเป็นสาเหตุให้น้ำกลั่นระเหยเร็ว</span>`},
-            'entry.964120987':{label:'Fuel Tank Level',type:'less_than',std:50,severity:'warning',message:val=>`<strong>วินิจฉัย:</strong> ระดับน้ำมันเชื้อเพลิง (เหลือ ${val} ลิตร) ค่อนข้างน้อย<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจไม่เพียงพอต่อการทำงานต่อเนื่องเป็นเวลานานในสถานการณ์ฉุกเฉิน และการปล่อยให้ระดับน้ำมันต่ำอาจทำให้ตะกอนที่ก้นถังถูกดูดเข้าไปในระบบ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรรักษาะดับน้ำมันเชื้อเพลิงให้มากกว่า 75% ของความจุถังเสมอเพื่อความพร้อมใช้งานสูงสุด</span>`},
-            'entry.323305993':{label:'การรั่วไหลของน้ำมันเชื้อเพลิง',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมในระบบส่งจ่ายน้ำมันเชื้อเพลิง<span class="engineering-note"><strong>ผลกระทบ:</strong> เป็นอันตรายร้ายแรง! เสี่ยงต่อการเกิดอัคคีภัยได้ง่ายเมื่อมีประกายไฟหรือความร้อนสูง และทำให้สิ้นเปลืองเชื้อเพลิงโดยใช่เหตุ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> หยุดใช้งานเครื่องยนต์ทันที! ตรวจสอบหาจุดรั่วตามท่อทาง, ข้อต่อ, และปั๊มเชื้อเพลิง และดำเนินการซ่อมแซมโดยผู้เชี่ยวชาญ</span>`},
-            'entry.1072480311':{label:'การรั่วไหลของน้ำมันหล่อลื่น',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมของน้ำมันหล่อลื่น<span class="engineering-note"><strong>ผลกระทบ:</strong> ทำให้ระดับน้ำมันหล่อลื่นลดลงอย่างรวดเร็ว ส่งผลให้การหล่อลื่นไม่เพียงพอและเครื่องยนต์อาจเสียหายรุนแรง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบหาจุดรั่วซึม เช่น ปะเก็นอ่างน้ำมันเครื่อง, ซีลข้อเหวี่ยง และทำการซ่อมแซมโดยด่วน</span>`},
-            'entry.1607591057':{label:'การรั่วไหลของน้ำระบายความร้อน',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมในระบบระบายความร้อน<span class="engineering-note"><strong>ผลกระทบ:</strong> ทำให้ระดับน้ำหล่อเย็นลดลงและเกิดภาวะ Overheat ได้ง่าย</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบท่อยาง, หม้อน้ำ, ปั๊มน้ำ และจุดเชื่อมต่อต่างๆ เพื่อหาและแก้ไขรอยรั่ว</span>`},
-            'entry.719816448':{label:'ตรวจเช็คสภาพของสลักและน๊อต',type:'equals',std:'น็อตไม่แน่น',severity:'warning',message:`<strong>วินิจฉัย:</strong> พบสลักเกลียวหรือน็อตมีอาการคลายตัว<span class="engineering-note"><strong>ผลกระทบ:</strong> แรงสั่นสะเทือนจากการทำงานของเครื่องยนต์อาจทำให้น็อตคลายตัวมากขึ้น ส่งผลให้ชิ้นส่วนยึดไม่แน่น เกิดเสียงดัง หรืออาจหลุดจนเกิดความเสียหายได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรทำการขันน็อตให้แน่นตามค่าแรงบิด (Torque) ที่กำหนด และตรวจสอบจุดอื่นๆ ที่อาจคลายตัวได้ เช่น แท่นเครื่อง, ท่อไอเสีย</span>`},
-            'entry.737194412':{label:'ตรวจเช็คสภาพของขั้วต่อสายไฟฟ้า',type:'equals',std:'ขั้วสายไม่แน่น',severity:'critical',message:`<strong>วินิจฉัย:</strong> ขั้วต่อสายไฟฟ้าหลัก (เช่น ขั้วแบตเตอรี่, ไดชาร์จ, ไดสตาร์ท) ไม่แน่น<span class="engineering-note"><strong>ผลกระทบ:</strong> การเชื่อมต่อที่ไม่สมบูรณ์ทำให้เกิดความต้านทานสูง ณ จุดเชื่อมต่อ เกิดความร้อนสะสมสูงมากจนอาจละลายฉนวนและเป็นสาเหตุของเพลิงไหม้ได้ อีกทั้งยังทำให้การชาร์จไฟหรือการสตาร์ทเครื่องยนต์มีปัญหา</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ทำความสะอาดขั้วสายและขันให้แน่นทันที</span>`},
-            'entry.1182164809':{label:'ตรวจเช็คไส้กรองอากาศ',type:'equals',std:'ไส้กรองตัน',severity:'warning',message:`<strong>วินิจฉัย:</strong> ไส้กรองอากาศมีการอุดตัน<span class="engineering-note"><strong>ผลกระทบ:</strong> อากาศเข้าสู่ห้องเผาไหม้ได้น้อยลง ทำให้ส่วนผสมน้ำมันหนาเกินไป การเผาไหม้ไม่สมบูรณ์ เกิดควันดำ สิ้นเปลืองเชื้อเพลิง และกำลังเครื่องยนต์ตก</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เป่าทำความสะอาดหรือเปลี่ยนไส้กรองอากาศใหม่ตามความเหมาะสม</span>`},
-            'entry.950885152':{label:'ตรวจเช็คไส้กรองน้ำมัน',type:'equals',std:'ตัน',severity:'warning',message:`<strong>วินิจฉัย:</strong> ไส้กรองน้ำมันเชื้อเพลิง (ดีเซล) อุดตัน<span class="engineering-note"><strong>ผลกระทบ:</strong> เชื้อเพลิงไหลไปเลี้ยงปั๊มได้ไม่สะดวก ทำให้แรงดันตก เครื่องยนต์อาจเร่งไม่ขึ้น, กำลังตก, หรือดับกลางคันได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรเปลี่ยนไส้กรองน้ำมันเชื้อเพลิงตามระยะที่กำหนด หรือเปลี่ยนทันทีเมื่อพบการอุดตัน</span>`},
-            'entry.824942619':{label:'เช็คน้ำในท่อดูดปั๊มน้ำ',type:'equals',std:'มีรอยรั่ว',severity:'critical',message:`<strong>วินิจฉัย:</strong> ท่อทางดูด (Suction Pipe) ของปั๊มน้ำมีรอยรั่ว<span class="engineering-note"><strong>ผลกระทบ:</strong> ปั๊มจะดูดอากาศเข้าไปในระบบแทนที่จะเป็นน้ำ (เกิด Cavitation) ทำให้ปั๊มไม่สามารถสร้างแรงดันได้ หรือแรงดันตกวูบวาบ ซึ่งเป็นอันตรายอย่างยิ่งต่อประสิทธิภาพการดับเพลิง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> หาจุดรั่วและทำการซ่อมแซมโดยด่วน อาจต้องตรวจสอบซีลและปะเก็นบริเวณหน้าแปลนของปั๊มด้วย</span>`},
-            'entry.1298699451':{label:'ทดสอบการทำงานของปั๊มรักษาแรงดัน',type:'equals',std:'ผิดปกติ',severity:'critical',message:`<strong>วินิจฉัย:</strong> Jocky Pump (ปั๊มรักษาแรงดัน) ทำงานผิดปกติ<span class="engineering-note"><strong>ผลกระทบ:</strong> หาก Jocky Pump ไม่ทำงานเพื่อชดเชยแรงดันรั่วซึมเล็กน้อยในระบบ จะทำให้ Fire Pump ต้องทำงานบ่อยโดยไม่จำเป็น ส่งผลให้เกิดการสึกหรอและอาจทำให้ผู้ดูแลไม่ทราบถึงการรั่วซึมเล็กๆ ในระบบ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบระบบควบคุม, Pressure Switch, และตัวปั๊มของ Jocky Pump โดยละเอียด</span>`},
-            'entry.170318696':{label:'แรงดันน้ำที่ปั๊มเริ่มทำงาน',type:'numeric_range',std:[95,105],severity:'critical',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> Jockey Pump เริ่มทำงานที่แรงดัน ${val} PSI ซึ่งอาจต่ำเกินไป<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> หากตั้งค่า Start Pressure ต่ำเกินไป (ใกล้เคียงกับแรงดันเริ่มของ Fire Pump) อาจทำให้ Fire Pump เริ่มทำงานก่อน ซึ่งไม่ถูกต้องตามหลักการ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบและปรับตั้ง Pressure Switch ของ Jockey Pump ให้เริ่มทำงานที่ 100 PSI</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> Jockey Pump เริ่มทำงานที่แรงดัน ${val} PSI ซึ่งสูงเกินไป<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> การตั้งค่าแรงดันเริ่มทำงานสูงไป จะทำให้ปั๊มทำงานบ่อยเกินความจำเป็นและอาจทำงานตลอดเวลาหากมีรอยรั่วซึมเล็กน้อย</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบและปรับตั้ง Pressure Switch ของ Jockey Pump ให้เริ่มทำงานที่ 100 PSI</span>`},
-            'entry.835390568':{label:'แรงดันน้ำที่ปั๊มหยุดทำงาน',type:'numeric_range',std:[120,130],severity:'critical',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> Jockey Pump หยุดทำงานที่แรงดัน ${val} PSI ซึ่งต่ำกว่ามาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> แรงดันในเส้นท่อจะไม่อยู่ในระดับที่พร้อมใช้งานสูงสุดตลอดเวลา</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับตั้ง Pressure Switch ของ Jockey Pump ให้หยุดทำงานในช่วง 120-130 PSI</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> Jockey Pump หยุดทำงานที่แรงดัน ${val} PSI ซึ่งสูงกว่ามาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> สร้างแรงดันในระบบสูงเกินความจำเป็นโดยใช่เหตุ อาจเป็นอันตรายต่ออุปกรณ์บางชิ้นในระยะยาว</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับตั้ง Pressure Switch ของ Jockey Pump ให้หยุดทำงานในช่วง 120-130 PSI</span>`},
-            'entry.380068157':{label:'V Belts Condition',type:'equals',std:'สายพานหย่อน',severity:'warning',message:`<strong>วินิจฉัย:</strong> สายพานมีอาการหย่อน<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจทำให้เกิดเสียงดัง, ประสิทธิภาพการชาร์จไฟจากไดชาร์จลดลง และการระบายความร้อนจากปั๊มน้ำไม่มีประสิทธิภาพเท่าที่ควร เสี่ยงที่สายพานจะหลุดออกจากร่องพูลเลย์</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ทำการปรับตั้งความตึงของสายพานให้ได้ตามมาตรฐาน (โดยทั่วไปกดแล้วยุบได้ไม่เกิน 1-1.5 ซม.) หากสายพานมีรอยแตกควรรีบเปลี่ยนใหม่</span>`},
-            'entry.1506477567':{label:'แรงดันน้ำขณะเครื่องยนต์ทำงาน',type:'numeric_range',std:[115,130],severity:'warning',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> ขณะเครื่องยนต์ทำงาน แรงดันน้ำอยู่ที่ ${val} PSI ซึ่งต่ำกว่าที่ควรจะเป็น (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> ประสิทธิภาพในการส่งน้ำดับเพลิงอาจไม่เพียงพอ โดยเฉพาะกับอาคารสูงหรือจุดที่อยู่ไกลจากปั๊ม</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบรอบเครื่องยนต์ว่าต่ำไปหรือไม่ หรืออาจมีปัญหารั่วในระบบ หรือปั๊มอาจสึกหรอ</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> ขณะเครื่องยนต์ทำงาน แรงดันน้ำอยู่ที่ ${val} PSI ซึ่งสูงกว่าที่ควรจะเป็น (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> แรงดันที่สูงเกินไปอาจเป็นอันตรายต่อท่อ, ข้อต่อ, และวาล์วในระบบ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบรอบเครื่องยนต์ว่าสูงเกินไปหรือไม่ หรือ Pressure Relief Valve อาจทำงานผิดปกติ</span>`},
-            'entry.1316882575':{label:'การทำงานของไฟแสดงผล',type:'equals',std:'ไฟติดไม่ครบ',severity:'warning',message:`<strong>วินิจฉัย:</strong> ไฟแสดงสถานะบนแผงควบคุมติดไม่ครบ<span class="engineering-note"><strong>ผลกระทบ:</strong> ผู้ปฏิบัติงานอาจไม่สามารถรับทราบสถานะที่แท้จริงของระบบได้ เช่น ไม่ทราบเมื่อเกิดเหตุขัข้อง (Fault) หรือเมื่อระบบกำลังทำงาน</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบหลอดไฟและวงจรที่เกี่ยวข้องเพื่อทำการซ่อมแซม</span>`},
-            'entry.628997006':{label:'ตรวจเช็คการสั่นของเครื่องยนต์',type:'equals',std:'ผิดปกติ(เครื่องสั่นมาก)',severity:'critical',message:`<strong>วินิจฉัย:</strong> เครื่องยนต์มีอาการสั่นสะเทือนรุนแรงผิดปกติขณะทำงาน<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจเป็นสัญญาณของปัญหาที่รุนแรง เช่น การจุดระเบิดไม่ครบสูบ, ยางแท่นเครื่องขาด, หรือความไม่สมดุลของชิ้นส่วนภายใน การปล่อยทิ้งไว้อาจทำให้เกิดความเสียหายรุนแรงตามมา</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรหยุดเครื่องและให้ช่างผู้ชำนาญตรวจสอบหาสาเหตุโดยละเอียด</span>`},
-            'entry.1209254361':{label:'ตรวจเช็คความผิดปกติของเสียง',type:'equals',std:'มีเสียงผิดปกติ',severity:'critical',message:`<strong>วินิจฉัย:</strong> มีเสียงดังผิดปกติเกิดขึ้นขณะเครื่องยนต์ทำงาน<span class="engineering-note"><strong>ผลกระทบ:</strong> เสียงที่ผิดปกติมักเป็นสัญญาณเตือนของความเสียหายที่กำลังจะเกิดขึ้น เช่น เสียงโลหะกระทบกันอาจหมายถึงชิ้นส่วนภายในหลวมหรือแตกหัก</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ระบุแหล่งที่มาของเสียงและทำการตรวจสอบโดยละเอียด อาจต้องหยุดการทำงานของเครื่องเพื่อความปลอดภัย</span>`},
-            'entry.950605992':{label:'การทำงานของสวิทช์',type:'equals',std:'ทำงานผิดปกติ',severity:'critical',message:`<strong>วินิจฉัย:</strong> Flow Switch ทำงานผิดปกติ<span class="engineering-note"><strong>ผลกระทบ:</strong> Flow Switch มีหน้าที่ตรวจจับการไหลของน้ำในท่อเพื่อส่งสัญญาณไปที่ตู้ควบคุม หากทำงานผิดพลาดอาจทำให้ระบบไม่ส่งสัญญาณเตือนเมื่อมีการใช้น้ำดับเพลิงจริง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบการทำงานของ Flow Switch และวงจรที่เกี่ยวข้อง</span>`},
-            'entry.764561274':{label:'V Belts Condition/ตรวจเช็คการทำงานของสายพาน',type:'equals',std:'ฉีกขาด',severity:'critical',message:`<strong>วินิจฉัย:</strong> สายพานมีร่องรอยการฉีกขาด<span class="engineering-note"><strong>ผลกระทบ:</strong> มีความเสี่ยงสูงมากที่สายพานจะขาดขณะเครื่องยนต์ทำงาน ซึ่งจะทำให้อุปกรณ์ที่เกี่ยวข้องทั้งหมดหยุดทำงานทันที เช่น ปั๊มน้ำ, ไดชาร์จ ส่งผลให้เครื่อง Overheat และไม่สามารถทำงานต่อได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เปลี่ยนสายพานเส้นใหม่ทันที ห้ามใช้งานต่อ</span>`},
-            'entry.1833812342':{label:'แรงดันการชาร์จแบตเตอรี่',type:'less_than',std:13.5,severity:'warning',message:val=>`<strong>วินิจฉัย:</strong> แรงดันการชาร์จแบตเตอรี่ (วัดได้ ${val} V) ต่ำกว่าที่ควรจะเป็น<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> ระบบชาร์จไฟ (ไดชาร์จ) อาจทำงานได้ไม่เต็มประสิทธิภาพ ทำให้แบตเตอรี่ไม่ได้รับการชาร์จไฟกลับเต็มที่หลังจากการสตาร์ท อาจส่งผลให้แบตเตอรี่มีไฟไม่พอในระยะยาว</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบไดชาร์จและระบบควบคุมแรงดัน (Voltage Regulator) ปกติควรมีแรงดันชาร์จอยู่ที่ประมาณ 13.5-14.5V ขณะเครื่องยนต์ทำงาน</span>`},
-            'entry.1502505224':{label:'Test Battery/ทดสอบแบตเตอรี่',type:'less_than',std:12,severity:'critical',message:val=>`<strong>วินิจฉัย:</strong> แรงดันไฟฟ้าของแบตเตอรี่ (วัดได้ ${val} VDC) ต่ำกว่าค่ามาตรฐาน<span class="engineering-note"><strong>ผลกระทบ:</strong> กำลังในการสตาร์ทเครื่องยนต์ไม่เพียงพอ มีความเสี่ยงสูงที่จะไม่สามารถสตาร์ทเครื่องยนต์ได้ในสถานการณ์ฉุกเฉิน</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรพิจารณาเปลี่ยนแบตเตอรี่ลูกใหม่ที่มีค่า CCA (Cold Cranking Amps) ตรงตามสเปคของเครื่องยนต์โดยด่วน</span>`},
-            'entry.1952860784':{label:'ตรวจสอบความผิดปกติของเสียงและกลิ่น',type:'equals',std:'ผิดปกติ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบเสียงหรือกลิ่นผิดปกติในระบบไฟฟ้า<span class="engineering-note"><strong>ผลกระทบ:</strong> กลิ่นไหม้หรือเสียงอาร์คเป็นสัญญาณอันตรายของการลัดวงจรหรืออุปกรณ์ไฟฟ้าทำงานหนักเกินไป ซึ่งอาจนำไปสู่การเกิดเพลิงไหม้ได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> รีบตัดระบบไฟฟ้าและตรวจสอบหาต้นตอของปัญหาโดยผู้เชี่ยวชาญทันที</span>`},
-            'entry.1304076428':{label:'ตรวจเช็คสภาพของ Indicator',type:'equals',std:'ผิดปกติ',severity:'warning',message:`<strong>วินิจฉัย:</strong> Indicator หรือไฟแสดงสถานะของ Circuit Breaker ทำงานผิดปกติ<span class="engineering-note"><strong>ผลกระทบ:</strong> ทำให้ไม่สามารถทราบสถานะที่แท้จริงของเบรกเกอร์ได้ (ON/OFF/TRIP)</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบและซ่อมแซมกลไกหรือหลอดไฟของ Indicator</span>`},
-            'entry.1601277291':{label:'ตรวจสอบสภาพและการทำงานทั่วไป',type:'equals',std:'ผิดปกติ',severity:'warning',message:`<strong>วินิจฉัย:</strong> การทำงานทั่วไปของระบบไฟฟ้าผิดปกติ<span class="engineering-note"><strong>ผลกระทบ:</strong> บ่งชี้ถึงปัญหาที่อาจยังไม่แสดงอาการรุนแรง แต่ควรได้รับการตรวจสอบ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรระบุรายละเอียดของความผิดปกติและดำเนินการตรวจสอบ</span>`},
-            'entry.851234898':{label:'ตรวจสอบสภาพโครงสร้างของอุปกรณ์',type:'equals',std:'ผิดปกติ',severity:'warning',message:`<strong>วินิจฉัย:</strong> โครงสร้างตู้ควบคุมหรืออุปกรณ์ไฟฟ้ามีสภาพผิดปกติ เช่น ขึ้นสนิม, บิดเบี้ยว, มีรอยแตก<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจส่งผลต่อความแข็งแรงและความปลอดภัยในการป้องกันอุปกรณ์ภายใน</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ดำเนินการซ่อมแซมเพื่อรักษาสภาพของโครงสร้างให้สมบูรณ์</span>`},
-            'entry.1956843408':{label:'ตรวจสอบฉนวนและกราวด์',type:'equals',std:'เสื่อมสภาพ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ฉนวนสายไฟหรือระบบกราวด์เสื่อมสภาพ<span class="engineering-note"><strong>ผลกระทบ:</strong> ฉนวนที่เสื่อมสภาพอาจทำให้เกิดไฟรั่วหรือลัดวงจรได้ ส่วนระบบกราวด์ที่ไม่ดีจะไม่สามารถป้องกันอันตรายจากไฟดูดได้เมื่อเกิดเหตุไฟรั่ว</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจวัดค่าความต้านทานฉนวนและค่าความต้านทานหลักดิน หากไม่ได้มาตรฐานต้องรีบดำเนินการแก้ไข</span>`},
-            'entry.1745325661':{label:'ตรวจขันน๊อตล็อกขั้วสายไฟและจุดต่อต่างๆ',type:'equals',std:'ผิดปกติ',severity:'critical',message:`<strong>วินิจฉัย:</strong> การยึดขั้วสายไฟและจุดต่อต่างๆ ไม่แน่น<span class="engineering-note"><strong>ผลกระทบ:</strong> เหมือนกับกรณีขั้วสายไม่แน่น คือทำให้เกิดความร้อนสูง (High Resistance Contact) และเสี่ยงต่อการเกิดอัคคีภัยอย่างยิ่ง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ทำการตรวจสอบและขันจุดเชื่อมต่อทางไฟฟ้าทั้งหมดให้แน่น</span>`},
-            'entry.498232465':{label:'ตรวจสอบอุปกรณ์ระบบความปลอดภัย',type:'equals',std:'ไม่พร้อมใช้งาน',severity:'critical',message:`<strong>วินิจฉัย:</strong> อุปกรณ์ความปลอดภัย เช่น Emergency Stop, Limit Switch, หรือเซ็นเซอร์ต่างๆ ไม่พร้อมใช้งาน<span class="engineering-note"><strong>ผลกระทบ:</strong> ระบบจะไม่สามารถหยุดทำงานหรือป้องกันตัวเองได้ในสภาวะฉุกเฉิน ซึ่งอาจนำไปสู่ความเสียหายรุนแรงต่ออุปกรณ์หรือเป็นอันตรายต่อบุคคล</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ซ่อมแซมอุปกรณ์ความปลอดภัยให้อยู่ในสภาพพร้อมใช้งาน 100% เสมอ</span>`},
-            'entry.1443945119':{label:'ตรวจสอบฟิวส์และอุปกรณ์ป้องกันต่างๆ',type:'equals',std:'ไม่พร้อมใช้งาน',severity:'critical',message:`<strong>วินิจฉัย:</strong> ฟิวส์หรืออุปกรณ์ป้องกัน (เช่น Circuit Breaker, Overload Relay) ไม่พร้อมใช้งาน<span class="engineering-note"><strong>ผลกระทบ:</strong> ระบบจะขาดการป้องกันกระแสเกินหรือการลัดวงจร หากเกิดเหตุขัดข้องอาจทำให้อุปกรณ์หลัก เช่น มอเตอร์หรือแผงวงจร ได้รับความเสียหายอย่างหนัก</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบและเปลี่ยนฟิวส์หรือซ่อมแซมอุปกรณ์ป้องกันให้กลับมาทำงานได้ตามปกติ</span>`},
-            'entry.569091221':{label:'ตรวจสอบการทำงานในระบบอาคารอัติโนมัติ',type:'equals',std:'ไม่พร้อมใช้งาน',severity:'warning',message:`<strong>วินิจฉัย:</strong> การเชื่อมต่อหรือการสื่อสารกับระบบควบคุมอาคารอัตโนมัติ (BAS) ไม่ทำงาน<span class="engineering-note"><strong>ผลกระทบ:</strong> ศูนย์ควบคุมกลางจะไม่สามารถเห็นสถานะหรือควบคุม Fire Pump ได้ ทำให้การบริหารจัดการเหตุฉุกเฉินทำได้ยากขึ้น</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบสายสัญญาณ, โปรโตคอลการสื่อสาร, และการตั้งค่าในระบบ BAS</span>`},
-            'entry.209108764':{label:'บันทึกค่าแรงดัน',type:'less_than',std:12,severity:'critical',message:val=>`<strong>วินิจฉัย:</strong> แรงดันไฟฟ้าที่บันทึกได้ (${val} V) ต่ำกว่า 12V อย่างมีนัยสำคัญ<span class="engineering-note"><strong>ผลกระทบ:</strong> เป็นสัญญาณบ่งชี้ว่าแบตเตอรี่อยู่ในสภาวะคายประจุจนเกือบหมด (Deep Discharge) หรืออาจมีเซลล์ใดเซลล์หนึ่งเสียหาย ไม่สามารถจ่ายกระแสไฟเพื่อสตาร์ทเครื่องยนต์ได้อย่างแน่นอน</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ต้องดำเนินการแก้ไขเรื่องแบตเตอรี่และระบบชาร์จโดยทันที</span>`},
-            'entry.1127101964':{label:'Cooling Water Temperature',type:'numeric_range',std:[80,100],severity:'warning',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> อุณหภูมิน้ำหล่อเย็น (${val} °C) ต่ำกว่าช่วงทำงานปกติ (${std[0]}-${std[1]} °C)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> หากเครื่องทำงานมาระยะหนึ่งแล้วอุณหภูมิยังต่ำอยู่ อาจบ่งชี้ว่าเทอร์โมสตัท (วาล์วน้ำ) เปิดค้าง ทำให้เครื่องยนต์ร้อนถึงอุณหภูมิทำงานช้าเกินไป ส่งผลให้การเผาไหม้ไม่สมบูรณ์และเกิดการสึกหรอสูง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบการทำงานของเทอร์โมสตัท</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> อุณหภูมิน้ำหล่อเย็น (${val} °C) สูงกว่าช่วงทำงานปกติ (${std[0]}-${std[1]} °C)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> มีความเสี่ยงสูงที่เครื่องยนต์จะ Overheat ซึ่งอาจสร้างความเสียหายร้ายแรงต่อปะเก็นฝาสูบ, ฝาสูบโก่ง, หรือชิ้นส่วนภายในเครื่องยนต์เสียหาย</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบการทำงานของพัดลม, ระดับน้ำ, และการอุดตันในระบบหม้อน้ำโดยด่วน</span>`},
-            'entry.1301900075':{label:'Lubricating Oil Pressure',type:'numeric_range',std:[250,750],severity:'critical',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> แรงดันน้ำมันหล่อลื่น (${val} Kpa) ต่ำกว่ามาตรฐาน (${std[0]}-${std[1]} Kpa)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> เป็นสภาวะอันตรายร้ายแรง! การหล่อลื่นไม่เพียงพอจะทำให้เกิดการเสียดสีรุนแรงที่แบริ่งและเพลาข้อเหวี่ยง อาจนำไปสู่ความเสียหายถาวรของเครื่องยนต์ (Engine Seizure)</span><span class="engineering-note"><strong>คำแนะนำ:</strong> หยุดเครื่องยนต์ทันที! ตรวจสอบระดับน้ำมันเครื่อง, การอุดตันของกรอง, หรืออาจเกิดปัญหาที่ปั๊มน้ำมันเครื่อง (Oil Pump)</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> แรงดันน้ำมันหล่อลื่น (${val} Kpa) สูงกว่ามาตรฐาน (${std[0]}-${std[1]} Kpa)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> อาจเกิดจากการอุดตันของไส้กรองน้ำมันเครื่อง หรือวาล์วระบายแรงดัน (Relief Valve) ทำงานผิดปกติ แรงดันที่สูงเกินไปอาจทำให้ซีลและปะเก็นต่างๆ เสียหายจนเกิดการรั่วซึมได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบ/เปลี่ยนไส้กรองน้ำมันเครื่อง และตรวจสอบวาล์วระบายแรงดัน</span>`},
-            'entry.1405771031':{label:'Engine RPM',type:'numeric_range',std:[2200,2400],severity:'warning',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> ความเร็วรอบเครื่องยนต์ (${val} RPM) ต่ำกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} RPM)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> อาจทำให้ปั๊มน้ำสร้างแรงดันและอัตราการไหลได้ไม่ถึงค่าที่ออกแบบไว้ ประสิทธิภาพการดับเพลิงลดลง และไดชาร์จอาจผลิตกระแสไฟได้ไม่เพียงพอ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับจูน Governor หรือระบบควบคุมรอบเครื่องยนต์</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> ความเร็วรอบเครื่องยนต์ (${val} RPM) สูงกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} RPM)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> ทำให้เครื่องยนต์ทำงานหนักเกินความจำเป็น สิ้นเปลืองเชื้อเพลิง และเพิ่มการสึกหรอในระยะยาว อาจสร้างแรงดันในระบบสูงเกินไปจนเป็นอันตรายต่อท่อและข้อต่อได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับจูน Governor หรือระบบควบคุมรอบเครื่องยนต์</span>`},
-            'entry.797055912':{label:'แรงดันน้ำที่เครื่องยนต์เริ่มทำงาน',type:'numeric_range',std:[94,104],severity:'critical',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> Fire Pump ตั้งค่าแรงดันเริ่มทำงานที่ ${val} PSI ซึ่งต่ำกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> นี่คือจุดวิกฤต! การตั้งค่าที่ต่ำไปอาจทำให้ Fire Pump เริ่มทำงานช้าเกินไปในสถานการณ์เพลิงไหม้จริง ทำให้การตอบสนองต่อเหตุการณ์ล่าช้า</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ต้องทำการปรับตั้ง Pressure Switch ของ Fire Pump ให้เริ่มทำงานที่ 99 PSI (หรือต่ำกว่าแรงดันเริ่มของ Jockey Pump) โดยทันที</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> Fire Pump ตั้งค่าแรงดันเริ่มทำงานที่ ${val} PSI ซึ่งสูงกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> นี่คือจุดวิกฤต! หากตั้งค่าสูงเกินไป (ใกล้เคียงกับแรงดันเริ่มของ Jockey Pump) อาจทำให้ Fire Pump ไม่ทำงานเลย เพราะ Jockey Pump จะทำงานก่อนเสมอ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ต้องทำการปรับตั้ง Pressure Switch ของ Fire Pump ให้เริ่มทำงานที่ 99 PSI โดยทันที</span>`}};
-        
-        function generateAiAnalysis(data) {
-            let criticalIssues = new Set();
-            let warnings = new Set();
-            for (const entryId in analysisRules) {
-                const rule = analysisRules[entryId];
-                const rawValue = data[entryId];
-                if (rawValue === undefined || rawValue === '' || rawValue === null) continue;
-                let issue = '';
-                if (rule.type === 'less_than' || rule.type === 'numeric_range') {
-                    const numericValue = parseFloat(String(rawValue).replace(/,/g, ''));
-                    if (isNaN(numericValue)) {
-                        continue;
-                    }
-                    if (rule.type === 'less_than' && numericValue < rule.std) {
-                        issue = `<li>${rule.message(rawValue, rule.std)}</li>`;
-                    } else if (rule.type === 'numeric_range' && rule.std.length === 2) {
-                        if (numericValue < rule.std[0]) {
-                            issue = `<li>${rule.low_message(rawValue, rule.std)}</li>`;
-                        } else if (numericValue > rule.std[1]) {
-                            issue = `<li>${rule.high_message(rawValue, rule.std)}</li>`;
-                        }
-                    }
-                } else if (rule.type === 'equals') {
-                    if (String(rawValue).trim() === rule.std) {
-                        issue = `<li>${rule.message}</li>`;
-                    }
-                }
-                if (issue) {
-                    if (rule.severity === 'critical') {
-                        criticalIssues.add(issue);
-                    } else {
-                        warnings.add(issue);
-                    }
-                }
-            }
-            const keywordRules = [
-                { keyword: 'รั่ว', severity: 'critical', message: (label, text) => `<strong>การวิเคราะห์ข้อความ:</strong> ตรวจพบการระบุถึง "การรั่วซึม" ในหัวข้อ "${label}" <span class="engineering-note"><strong>ข้อความ:</strong> "${text}"<br><strong>ผลกระทบ:</strong> การรั่วซึมทุกชนิดคือความเสี่ยงร้ายแรงที่ต้องตรวจสอบโดยละเอียดทันที</span>` },
-                { keyword: 'ซึม', severity: 'critical', message: (label, text) => `<strong>การวิเคราะห์ข้อความ:</strong> ตรวจพบการระบุถึง "การซึม" ในหัวข้อ "${label}" <span class="engineering-note"><strong>ข้อความ:</strong> "${text}"<br><strong>คำแนะนำ:</strong> การซึมเป็นสัญญาณเริ่มต้นของการรั่วไหล ควรหาที่มาและทำการแก้ไขก่อนจะลุกลาม</span>` },
-                { keyword: 'แตก', severity: 'warning', message: (label, text) => `<strong>การวิเคราะห์ข้อความ:</strong> ตรวจพบการระบุถึงการ "แตก" ของชิ้นส่วน ในหัวข้อ "${label}" <span class="engineering-note"><strong>ข้อความ:</strong> "${text}"<br><strong>คำแนะนำ:</strong> ชิ้นส่วนที่แตกอาจส่งผลต่อประสิทธิภาพและความปลอดภัย ควรตรวจสอบและพิจารณาเปลี่ยน</span>` },
-                { keyword: 'ร้าว', severity: 'warning', message: (label, text) => `<strong>การวิเคราะห์ข้อความ:</strong> พบการระบุถึง "รอยร้าว" ในหัวข้อ "${label}" <span class="engineering-note"><strong>ข้อความ:</strong> "${text}"<br><strong>คำแนะนำ:</strong> รอยร้าวสามารถขยายตัวได้เมื่อรับแรงสั่นสะเทือนหรือความร้อน ควรตรวจสอบและเฝ้าระวังเป็นพิเศษ</span>` }
-            ];
-            for (const name in data) {
-                const value = data[name];
-                if (typeof value === 'string' && value.trim() !== '') {
-                    const lowerCaseValue = value.toLowerCase();
-                    const isTextField = name === 'entry.129342865' || name === 'entry.690163791' || name === 'entry.788703385';
-                    if (isTextField) {
-                        const label = abbreviateHeader(Object.keys(headerToEntryIdMap).find(key => headerToEntryIdMap[key] === name) || name);
-                        keywordRules.forEach(rule => {
-                            if (lowerCaseValue.includes(rule.keyword)) {
-                                const issue = `<li>${rule.message(label, value)}</li>`;
-                                if (rule.severity === 'critical') {
-                                    criticalIssues.add(issue);
-                                } else {
-                                    warnings.add(issue);
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-            const critArray = Array.from(criticalIssues);
-            const warnArray = Array.from(warnings);
-            let html = '';
-            if (critArray.length > 0) {
-                html += `<div class="ai-response-card ai-critical"><h3>🚨 รายการต้องแก้ไขเร่งด่วน</h3><ul>${critArray.join('')}</ul></div>`;
-            }
-            if (warnArray.length > 0) {
-                html += `<div class="ai-response-card ai-warning"><h3>⚠️ ข้อควรระวังทางวิศวกรรม</h3><ul>${warnArray.join('')}</ul></div>`;
-            }
-            if (critArray.length === 0 && warnArray.length === 0) {
-                html = `<div class="ai-response-card ai-summary"><h3>✅ สรุปภาพรวม</h3><p>จากการวิเคราะห์ข้อมูล ไม่พบความผิดปกติที่มีนัยสำคัญทางวิศวกรรม ระบบอยู่ในสถานะพร้อมใช้งาน</p></div>` + html;
+        const createOrUpdateChart = (id, options) => {
+            const chart = ApexCharts.getChartByID(id);
+            if (chart) {
+                chart.updateOptions(options);
             } else {
-                html = `<div class="ai-response-card ai-summary"><h3>📝 สรุปภาพรวม</h3><p>ตรวจพบ ${critArray.length} ปัญหาระดับวิกฤต และ ${warnArray.length} ข้อควรระวัง กรุณาดำเนินการตามคำแนะนำทางวิศวกรรมด้านล่าง</p></div>` + html;
+                new ApexCharts(document.querySelector(`#${id}`), options).render();
             }
-            html += `<div class="ai-response-card ai-recommendation"><h3>💡 คำแนะนำทั่วไป</h3><p>ควรมีการจัดทำ Logbook เพื่อบันทึกค่าที่วัดได้และกิจกรรมการบำรุงรักษาทุกครั้ง ซึ่งจะช่วยในการวิเคราะห์แนวโน้ม (Trend Analysis) และการบำรุงรักษาเชิงพยากรณ์ (Predictive Maintenance) ในอนาคต</p></div>`;
-            return html;
+        };
+
+        const rpmKey = headers.find(h => h.toLowerCase().includes('engine speed'));
+        if (rpmKey) {
+            const std = parseStd(rpmKey);
+            const seriesData = chartData.map(d => ({
+                x: DateHandler.parseDate(d.Actual)?.getTime(),
+                y: parseInt(String(d[rpmKey] || '').replace(/,/g, ''), 10) || null
+            })).filter(i => i.x && i.y !== null);
+
+            let annotations = {};
+            if (std) {
+                if (std.type === 'range') {
+                    annotations.yaxis = [{ y: std.max, borderColor: '#f57c00', strokeDashArray: 2, label: { borderColor: '#f57c00', style: { color: '#fff', background: '#f57c00' }, text: `STD Max: ${std.max} RPM` } }, { y: std.min, borderColor: '#fbc02d', strokeDashArray: 2, label: { borderColor: '#fbc02d', style: { color: '#fff', background: '#fbc02d' }, text: `STD Min: ${std.min} RPM` } }];
+                } else if (std.type === 'min') {
+                    annotations.yaxis = [{ y: std.value, borderColor: '#f57c00', label: { borderColor: '#f57c00', style: { color: '#fff', background: '#f57c00' }, text: `STD: ${std.value} RPM` } }];
+                }
+            }
+            
+            createOrUpdateChart('engine-speed-chart', {
+                ...chartOptions,
+                series: [{ name: 'RPM', data: seriesData }],
+                chart: { id: 'engine-speed-chart', type: 'area', height: 350 },
+                xaxis: { ...chartOptions.xaxis, type: 'datetime' },
+                colors: ['#00796b'],
+                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 100] } },
+                annotations: annotations
+            });
         }
 
-        function runAiAnalysis(rowIndex) {
-            const record = filteredRecords[rowIndex];
-            if (!record) return;
+        let normal = 0, abnormal = 0;
+        headers.filter(h => h.includes('(STD.')).forEach(k => {
+            if (checkValueAgainstStd(latest[k], parseStd(k))) normal++;
+            else abnormal++;
+        });
+        createOrUpdateChart('overview-chart', { ...chartOptions, series: [normal, abnormal], chart: { id: 'overview-chart', type: 'donut', height: 300 }, labels: ['ปกติ', 'ต้องตรวจสอบ'], colors: ['#2e7d32', '#d32f2f'], theme: { mode: 'light' }, legend: { position: 'bottom' }, plotOptions: { pie: { donut: { labels: { show: true, total: { show: true, label: 'รวม', color: '#004d40' } } } } } });
+
+        const findLastValidValue = (records, keyParts) => {
+            const key = headers.find(h => keyParts.some(part => h.toLowerCase().includes(part)));
+            if (!key) return 0;
+            const record = records.find(r => r[key] != null && r[key] !== '' && !isNaN(parseFloat(String(r[key]).replace(/[^0-9.,-]+/g, ""))));
+            return record ? parseFloat(String(record[key]).replace(/[^0-9.,-]+/g, "")) : 0
+        };
+
+        const createOrUpdateGauge = (id, keyParts, unit, defaultColor, records, type) => {
+            const value = findLastValidValue(records, keyParts);
+            const { color, status } = getGaugeStatus(value, type);
+            createOrUpdateChart(id, { ...radialOptions, series: [value], chart: { ...radialOptions.chart, id: id }, plotOptions: { ...radialOptions.plotOptions, radialBar: { ...radialOptions.plotOptions.radialBar, dataLabels: { ...radialOptions.plotOptions.radialBar.dataLabels, name: { ...radialOptions.plotOptions.radialBar.dataLabels.name, show: !!status, text: status }, value: { ...radialOptions.plotOptions.radialBar.dataLabels.value, formatter: (v) => `${parseFloat(v).toFixed(1)}${unit}` } } } }, colors: [color || defaultColor] });
+        };
+
+        createOrUpdateGauge("fuel-gauge-chart", ["fuel tank"], '%', '#0288d1', allData);
+        createOrUpdateGauge("temp-gauge-chart", ["cooling water temperature"], "°C", '#f57c00', allData, 'temperature');
+        createOrUpdateGauge("pressure-gauge-chart", ["แรงดันน้ำ", "pressure"], " PSI", '#689f38', allData);
+        createOrUpdateGauge("battery-gauge-chart", ["battery charging volt", "แรงดันการชาร์จ"], " V", '#fbc02d', allData, 'battery');
+    }
+
+    function populateHistoryTable(data,headers){const mainColumns=["Actual","ผู้ปฏิบัติงาน","ผู้ตรวจสอบ","ISSUE"];document.getElementById("table-header").innerHTML=mainColumns.map(colName=>`<th class="px-2 py-3 text-left font-semibold whitespace-nowrap text-sm">${abbreviateHeader(colName)}</th>`).join('')+'<th class="px-2 py-3 text-left font-semibold text-sm">Actions</th>';let tableHtml="";data.forEach((row,rowIndex)=>{tableHtml+=`<tr class="border-b border-gray-200 hover:bg-teal-50/50" data-row-index="${rowIndex}">`;mainColumns.forEach(colName=>{const headerKey=headers.find(h=>h.toLowerCase().startsWith(colName.toLowerCase()))||colName;let rawValue=row[headerKey];let formattedValue=null==rawValue?"":rawValue;"Actual"===colName&&(formattedValue=DateHandler.formatDate(DateHandler.parseDate(rawValue)));tableHtml+=`<td class="px-2 py-3 whitespace-nowrap text-sm">${formattedValue}</td>`});tableHtml+=`<td class="px-2 py-3 flex items-center gap-2"><button class="toggle-details" data-target="${rowIndex}">📄 ดู</button><button class="ai-analyze-btn" data-row-index="${rowIndex}">🤖 วิเคราะห์</button></td></tr>`;tableHtml+=`<tr class="details-row" id="details-${rowIndex}"><td colspan="${mainColumns.length+1}" class="details-cell"><div class="details-grid">`;headers.filter(header=>!mainColumns.some(colName=>header.toLowerCase().startsWith(colName.toLowerCase()))&&"Plan"!==header).forEach(header=>{const topic=abbreviateHeader(header);let result=row[header]||"-";["เปลี่ยน","วันที่","แผน"].some(val=>topic.includes(val))&&DateHandler.parseDate(row[header])&&(result=DateHandler.formatDate(DateHandler.parseDate(row[header])));tableHtml+=`<div class="details-item"><span class="topic">${topic}</span><span class="result">${result}</span></div>`});tableHtml+="</div></td></tr>"});document.getElementById("table-body").innerHTML=tableHtml;document.querySelectorAll(".toggle-details").forEach(btn=>{btn.addEventListener("click",event=>{const targetIndex=event.target.dataset.target,detailsRow=document.getElementById(`details-${targetIndex}`);detailsRow&&("table-row"===detailsRow.style.display?(detailsRow.style.display="none",event.target.textContent="📄 ดู"):(detailsRow.style.display="table-row",event.target.textContent="📄 ซ่อน"))})});document.querySelectorAll(".ai-analyze-btn").forEach(btn=>{btn.addEventListener("click",event=>{runAiAnalysis(parseInt(event.currentTarget.dataset.rowIndex,10))})})}
+
+    // [FIX] This is the definitive, working version of the dropdown creator
+    function createCheckboxFilter(containerId, options, type) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const button = document.createElement('button');
+        button.className = 'filter-button';
+        button.textContent = `เลือก${type}...`;
+        container.innerHTML = '';
+        container.appendChild(button);
+
+        const stateContainer = document.createElement('div');
+        stateContainer.style.display = 'none';
+        container.appendChild(stateContainer);
+
+        const updateButtonText = () => {
+            const checked = Array.from(stateContainer.querySelectorAll('input:checked'));
+            if (checked.length === 0) {
+                button.textContent = `เลือก${type}...`;
+            } else if (checked.length === 1) {
+                const selectedOption = options.find(opt => String(opt.value) === checked[0].value);
+                button.textContent = selectedOption ? selectedOption.text : '1 รายการ';
+            } else {
+                button.textContent = `${checked.length} ${type === 'ปี' ? 'ปี' : 'เดือน'}ที่เลือก`;
+            }
+        };
+
+        const closeAllDropdowns = () => {
+            document.querySelectorAll('.filter-dropdown-list').forEach(list => list.remove());
+            document.removeEventListener('click', closeAllDropdowns);
+        };
+
+        button.addEventListener('click', e => {
+            e.stopPropagation();
+            const wasOpen = document.querySelector(`.filter-dropdown-list[data-owner="${containerId}"]`);
+            closeAllDropdowns();
+
+            if (wasOpen) return;
+
+            const list = document.createElement('div');
+            list.className = 'filter-dropdown-list';
+            list.dataset.owner = containerId;
+            list.style.zIndex = '210';
+            list.addEventListener('click', e => e.stopPropagation());
+
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = opt.value;
+                checkbox.className = 'mr-2 rounded text-teal-500 focus:ring-teal-400';
+                if (stateContainer.querySelector(`input[value="${opt.value}"]:checked`)) {
+                    checkbox.checked = true;
+                }
+                label.appendChild(checkbox);
+                label.append(` ${opt.text}`);
+                list.appendChild(label);
+            });
+            
+            list.addEventListener('change', () => {
+                const checkedInputs = Array.from(list.querySelectorAll('input:checked'));
+                stateContainer.innerHTML = checkedInputs.map(cb => `<input type="checkbox" value="${cb.value}" checked>`).join('');
+                updateButtonText();
+            });
+
+            document.body.appendChild(list);
+
+            const rect = button.getBoundingClientRect();
+            list.style.width = `${rect.width}px`;
+            list.style.left = `${rect.left}px`;
+
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const listHeight = list.offsetHeight > 200 ? 200 : list.offsetHeight;
+            if (spaceBelow < listHeight + 20 && rect.top > listHeight) {
+                list.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+            } else {
+                list.style.top = `${rect.bottom + 4}px`;
+            }
+            
+            setTimeout(() => document.addEventListener('click', closeAllDropdowns), 0);
+        });
+    }
+
+    function populateFilters(records){const y=[...new Set(records.map(r=>DateHandler.parseDate(r.Actual).getFullYear()))].sort((a,b)=>b-a).map(y=>({value:y,text:y+543}));const m=thaiMonths.map((m,i)=>({value:i,text:m}));createCheckboxFilter('year-filter',y,'ปี');createCheckboxFilter('month-filter',m,'เดือน')}
+    
+    function getFilteredData(years, months) {
+        return allRecords.filter(r => {
+            const date = DateHandler.parseDate(r.Actual);
+            if (!date) return false;
+            const yearMatch = years.length === 0 || years.includes(date.getFullYear());
+            const monthMatch = months.length === 0 || months.includes(date.getMonth());
+            return yearMatch && monthMatch;
+        });
+    }
+
+    function applyFilters() {
+        const selectedYears = Array.from(document.querySelectorAll('#year-filter div[style*="display: none"] input:checked')).map(cb => parseInt(cb.value));
+        const selectedMonths = Array.from(document.querySelectorAll('#month-filter div[style*="display: none"] input:checked')).map(cb => parseInt(cb.value));
+        filteredRecords = getFilteredData(selectedYears, selectedMonths);
+        renderDashboard(filteredRecords);
+    }
+
+    function renderDashboard(data) {
+        if (!data || data.length === 0) {
+            domCache.dashboardContent.innerHTML = `<div class="text-center text-xl glass-card p-8">ไม่พบข้อมูลสำหรับช่วงเวลาที่เลือก</div>`;
+            domCache.dashboardContent.classList.remove('opacity-0');
+            return;
+        }
+        if(!document.getElementById('system-status')) {
+            domCache.dashboardContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="shield-check"></i></div><p class="text-sm mb-1 opacity-70">สถานะระบบ</p><p id="system-status" class="text-2xl font-bold"></p></div>
+                    <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-check"></i></div><p class="text-sm mb-1 opacity-70">ตรวจสอบล่าสุด</p><p id="last-inspection-date" class="text-2xl font-bold"></p></div>
+                    <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="calendar-clock"></i></div><p class="text-sm mb-1 opacity-70">แผน PM ถัดไป</p><p id="next-pm-date" class="text-2xl font-bold"></p></div>
+                    <div class="glass-card p-6 text-center"><div class="kpi-icon mx-auto"><i data-lucide="alert-triangle"></i></div><p class="text-sm mb-1 opacity-70">จำนวน Issue</p><p id="issue-count" class="text-2xl font-bold"></p></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="activity" class="mr-2"></i>แนวโน้มรอบเครื่องยนต์ (RPM)</h2><div id="engine-speed-chart"></div></div>
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="pie-chart" class="mr-2"></i>ภาพรวมการตรวจสอบ</h2><div id="overview-chart"></div></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="fuel" class="mr-2"></i>ระดับน้ำมัน</h2><div id="fuel-gauge-chart"></div></div>
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="thermometer" class="mr-2"></i>อุณหภูมิ</h2><div id="temp-gauge-chart"></div></div>
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="droplets" class="mr-2"></i>แรงดันน้ำ</h2><div id="pressure-gauge-chart"></div></div>
+                    <div class="glass-card p-6"><h2 class="text-xl font-semibold mb-4 flex items-center"><i data-lucide="battery-charging" class="mr-2"></i>แบตเตอรี่</h2><div id="battery-gauge-chart"></div></div>
+                </div>
+                <div class="glass-card p-6" style="margin-bottom: 80px;">
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center"><i data-lucide="history" class="mr-2"></i>ประวัติการตรวจสอบ</h2>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-xs uppercase sticky-header"><tr id="table-header"></tr></thead><tbody id="table-body" class="text-gray-700"></tbody></table></div>
+                </div>`;
+        }
+        
+        const latest = data[0];
+        const headers = Object.keys(latest);
+        setupKpiCards(latest, headers);
+        renderCharts(data.slice().reverse(), latest, headers, data);
+        populateHistoryTable(data, headers);
+        lucide.createIcons();
+        domCache.dashboardContent.classList.remove('opacity-0');
+    }
+        
+    const headerToEntryIdMap = {
+        'Actual': 'entry.1632403651', 'ผู้ปฏิบัติงาน': 'entry.1231391232', 'PLAN': 'entry.994147210', 'Lubricating Oil Level': 'entry.1618028324', 'Cooling Water Level': 'entry.14334317', 'Battery Distilled Water Level': 'entry.1091386807', 'Fuel Tank Level': 'entry.964120987', 'Fuel Oil Leaks': 'entry.323305993', 'Lubricating Oil Leaks': 'entry.1072480311', 'Cooling Water Leaks': 'entry.1607591057', 'Tightness Of Bolts And Nuts': 'entry.719816448', 'Tightness Of Electrical Terminal Connections': 'entry.737194412', 'Air Cleaner': 'entry.1182164809', 'Fuel Filter Element': 'entry.950885152', 'Check Water Suction Tube': 'entry.824942619', 'Jocky Pump Test': 'entry.1298699451', 'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่ปั๊มเริ่มทำงาน': 'entry.170318696', 'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่ปั๊มหยุดทำงาน': 'entry.835390568', 'V Belts Condition': 'entry.380068157', 'Running Hours': 'entry.693422880', 'Engine RPM': 'entry.1405771031', 'Lubricating Oil Pressure': 'entry.1301900075', 'Lubricating Oil Temperature': 'entry.1118394468', 'Cooling Water Pressure': 'entry.278367378', 'Cooling Water Temperature': 'entry.1127101964', 'แรงดันน้ำในท่อส่งน้ำดับเพลิงที่เครื่องยนต์เริ่มทำงาน': 'entry.797055912', 'แรงดันน้ำในท่อส่งน้ำดับเพลิงขณะเครื่องยนต์ทำงาน': 'entry.1506477567', 'การทำงานของไฟแสดงผล': 'entry.1316882575', 'Check Vibrations': 'entry.628997006', 'Check All Moving Parts For Abnormal Sounds': 'entry.1209254361', 'Flow Switch': 'entry.950605992', 'General Cleaning': 'entry.1459189432', 'Battery Charging Volt': 'entry.1833812342', 'Test Battery': 'entry.1502505224', 'Change Ludricating Oil': 'entry.376703834', 'Change Ludricating Oil Filter': 'entry.550562469', 'Change Air Filter': 'entry.964740712', 'Inspection For Any Sign Of Wburnmarks': 'entry.1952860784', 'Check Status Of All Indication': 'entry.1304076428', 'Check For General Operation & Condition': 'entry.1601277291', 'Check Casing Condition': 'entry.851234898', 'Dedusting': 'entry.362638249', 'Body,Cubicle&Racking Cleaning': 'entry.1151340514', 'Insulation Resistance Test & Grounding Checked': 'entry.1956843408', 'Tightening Of All Electrical Connection': 'entry.1745325661', 'Lubricate Mechanical Parts': 'entry.1547716680', 'Check All Safety Devices': 'entry.498232465', 'Check Fuses & Protection Device': 'entry.1443945119', 'Tightening Busbar Supports': 'entry.614621971', 'Check Communication for Building Automation System': 'entry.569091221', 'Check Communication for RUUor DDC to Building Automation System and Cleaning': 'entry.673310831', 'Check Status Lamp Show for Annuciator Panel': 'entry.1022996900', 'Record Voltage': 'entry.209108764', 'ISSUE': 'entry.129342865', 'CONDITION': 'entry.690163791', 'HISTORY RECCORD': 'entry.788703385', 'V Belts Condition/ตรวจเช็คการทำงานของสายพาน': 'entry.764561274'
+    };
+    
+    // [IMPROVEMENT] Added new rules for more comprehensive analysis
+    const analysisRules = {
+        'entry.1618028324':{label:'ระดับน้ำมันหล่อลื่น',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำมันหล่อลื่นต่ำกว่าเกณฑ์ปกติอย่างมีนัยสำคัญ<span class="engineering-note"><strong>ผลกระทบ:</strong> เสี่ยงต่อการสึกหรอของชิ้นส่วนภายในเครื่องยนต์อย่างรุนแรง (เช่น ลูกสูบ, แบริ่ง) อาจทำให้เครื่องยนต์น็อคและเสียหายถาวรได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำมันหล่อลื่นเกรดที่ถูกต้องตามสเปคผู้ผลิตให้อยู่ในระดับ Full ทันที และตรวจสอบหารอยรั่วซึม</span>`},
+        'entry.14334317':{label:'ระดับน้ำระบายความร้อน',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำในระบบหล่อเย็นต่ำกว่าระดับที่กำหนด<span class="engineering-note"><strong>ผลกระทบ:</strong> ประสิทธิภาพการระบายความร้อนลดลง ทำให้เครื่องยนต์เกิดภาวะ Overheat ซึ่งอาจนำไปสู่การเสียหายของปะเก็นฝาสูบหรือฝาสูบโก่งได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำยาหล่อเย็น (Coolant) ให้ได้ระดับ และตรวจสอบการรั่วซึมในระบบ เช่น ท่อยาง, หม้อน้ำ, และปั๊มน้ำ</span>`},
+        'entry.1091386807':{label:'ระดับน้ำกลั่นของแบตเตอรี่',type:'equals',std:'ต่ำ',severity:'critical',message:`<strong>วินิจฉัย:</strong> ระดับน้ำกลั่นในแบตเตอรี่ต่ำกว่าระดับ Lower<span class="engineering-note"><strong>ผลกระทบ:</strong> แผ่นธาตุภายในแบตเตอรี่จะสัมผัสกับอากาศ เกิดปฏิกิริยาซัลเฟตเกาะที่แผ่นธาตุ ทำให้ความสามารถในการเก็บประจุลดลงอย่างถาวร และแบตเตอรี่เสื่อมสภาพก่อนเวลาอันควร</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เติมน้ำกลั่นบริสุทธิ์ (เท่านั้น) ให้อยู่ในระดับ Upper และตรวจสอบระบบการชาร์จว่ามีแรงดันสูงเกินไป (Overcharging) หรือไม่ ซึ่งเป็นสาเหตุให้น้ำกลั่นระเหยเร็ว</span>`},
+        'entry.964120987':{label:'Fuel Tank Level',type:'less_than',std:50,severity:'warning',message:val=>`<strong>วินิจฉัย:</strong> ระดับน้ำมันเชื้อเพลิง (เหลือ ${val} %) ค่อนข้างน้อย<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจไม่เพียงพอต่อการทำงานต่อเนื่องเป็นเวลานานในสถานการณ์ฉุกเฉิน และการปล่อยให้ระดับน้ำมันต่ำอาจทำให้ตะกอนที่ก้นถังถูกดูดเข้าไปในระบบ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรรักษาะดับน้ำมันเชื้อเพลิงให้มากกว่า 75% ของความจุถังเสมอเพื่อความพร้อมใช้งานสูงสุด</span>`},
+        'entry.323305993':{label:'การรั่วไหลของน้ำมันเชื้อเพลิง',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมในระบบส่งจ่ายน้ำมันเชื้อเพลิง<span class="engineering-note"><strong>ผลกระทบ:</strong> เป็นอันตรายร้ายแรง! เสี่ยงต่อการเกิดอัคคีภัยได้ง่ายเมื่อมีประกายไฟหรือความร้อนสูง และทำให้สิ้นเปลืองเชื้อเพลิงโดยใช่เหตุ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> หยุดใช้งานเครื่องยนต์ทันที! ตรวจสอบหาจุดรั่วตามท่อทาง, ข้อต่อ, และปั๊มเชื้อเพลิง และดำเนินการซ่อมแซมโดยผู้เชี่ยวชาญ</span>`},
+        'entry.1072480311':{label:'การรั่วไหลของน้ำมันหล่อลื่น',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมของน้ำมันหล่อลื่น<span class="engineering-note"><strong>ผลกระทบ:</strong> ทำให้ระดับน้ำมันหล่อลื่นลดลงอย่างรวดเร็ว ส่งผลให้การหล่อลื่นไม่เพียงพอและเครื่องยนต์อาจเสียหายรุนแรง</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบหาจุดรั่วซึม เช่น ปะเก็นอ่างน้ำมันเครื่อง, ซีลข้อเหวี่ยง และทำการซ่อมแซมโดยด่วน</span>`},
+        'entry.1607591057':{label:'การรั่วไหลของน้ำระบายความร้อน',type:'equals',std:'รั่วไหล',severity:'critical',message:`<strong>วินิจฉัย:</strong> ตรวจพบการรั่วซึมในระบบระบายความร้อน<span class="engineering-note"><strong>ผลกระทบ:</strong> ทำให้ระดับน้ำหล่อเย็นลดลงและเกิดภาวะ Overheat ได้ง่าย</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบท่อยาง, หม้อน้ำ, ปั๊มน้ำ และจุดเชื่อมต่อต่างๆ เพื่อหาและแก้ไขรอยรั่ว</span>`},
+        'entry.719816448':{label:'ตรวจเช็คสภาพของสลักและน๊อต',type:'equals',std:'น็อตไม่แน่น',severity:'warning',message:`<strong>วินิจฉัย:</strong> พบสลักเกลียวหรือน็อตมีอาการคลายตัว<span class="engineering-note"><strong>ผลกระทบ:</strong> แรงสั่นสะเทือนจากการทำงานของเครื่องยนต์อาจทำให้น็อตคลายตัวมากขึ้น ส่งผลให้ชิ้นส่วนยึดไม่แน่น เกิดเสียงดัง หรืออาจหลุดจนเกิดความเสียหายได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ควรทำการขันน็อตให้แน่นตามค่าแรงบิด (Torque) ที่กำหนด และตรวจสอบจุดอื่นๆ ที่อาจคลายตัวได้ เช่น แท่นเครื่อง, ท่อไอเสีย</span>`},
+        'entry.737194412':{label:'ตรวจเช็คสภาพของขั้วต่อสายไฟฟ้า',type:'equals',std:'ขั้วสายไม่แน่น',severity:'critical',message:`<strong>วินิจฉัย:</strong> ขั้วต่อสายไฟฟ้าหลัก (เช่น ขั้วแบตเตอรี่, ไดชาร์จ, ไดสตาร์ท) ไม่แน่น<span class="engineering-note"><strong>ผลกระทบ:</strong> การเชื่อมต่อที่ไม่สมบูรณ์ทำให้เกิดความต้านทานสูง ณ จุดเชื่อมต่อ เกิดความร้อนสะสมสูงมากจนอาจละลายฉนวนและเป็นสาเหตุของเพลิงไหม้ได้ อีกทั้งยังทำให้การชาร์จไฟหรือการสตาร์ทเครื่องยนต์มีปัญหา</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ทำความสะอาดขั้วสายและขันให้แน่นทันที</span>`},
+        'entry.1182164809':{label:'ตรวจเช็คไส้กรองอากาศ',type:'equals',std:'ไส้กรองตัน',severity:'warning',message:`<strong>วินิจฉัย:</strong> ไส้กรองอากาศมีการอุดตัน<span class="engineering-note"><strong>ผลกระทบ:</strong> อากาศเข้าสู่ห้องเผาไหม้ได้น้อยลง ทำให้ส่วนผสมน้ำมันหนาเกินไป การเผาไหม้ไม่สมบูรณ์ เกิดควันดำ สิ้นเปลืองเชื้อเพลิง และกำลังเครื่องยนต์ตก</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เป่าทำความสะอาดหรือเปลี่ยนไส้กรองอากาศใหม่ตามความเหมาะสม</span>`},
+        'entry.1833812342':{label:'แรงดันการชาร์จแบตเตอรี่',type:'numeric_range',std:[13.5,14.8],severity:'warning',low_message:val=>`<strong>วินิจฉัย:</strong> แรงดันการชาร์จแบตเตอรี่ (วัดได้ ${val} V) ต่ำกว่าที่ควรจะเป็น (13.5V-14.8V)<span class="engineering-note"><strong>ผลกระทบ:</strong> ระบบชาร์จไฟอาจทำงานได้ไม่เต็มประสิทธิภาพ ทำให้แบตเตอรี่ไม่ได้รับการชาร์จไฟกลับเต็มที่ อาจส่งผลให้แบตเตอรี่มีไฟไม่พอในระยะยาว</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบไดชาร์จและระบบควบคุมแรงดัน (Voltage Regulator)</span>`,high_message:val=>`<strong>วินิจฉัย:</strong> แรงดันการชาร์จแบตเตอรี่ (วัดได้ ${val} V) สูงเกินไป (Overcharging)<span class="engineering-note"><strong>ผลกระทบ:</strong> เป็นอันตรายต่อแบตเตอรี่ ทำให้ร้อนจัด, น้ำกลั่นเดือดเร็ว, แผ่นธาตุเสียหาย และแบตเตอรี่บวมหรือเสื่อมสภาพก่อนเวลาอันควร</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ตรวจสอบไดชาร์จและระบบควบคุมแรงดัน (Voltage Regulator) โดยด่วน</span>`},
+        'entry.693422880':{label:'Running Hours', type:'running_hours', std:200, severity:'warning', message:val => `<strong>วินิจฉัย:</strong> ชั่วโมงการทำงานสะสม (${val} ชม.) ใกล้หรือถึงรอบการบำรุงรักษา<span class="engineering-note"><strong>ผลกระทบ:</strong> การใช้งานเกินชั่วโมงที่กำหนดโดยไม่บำรุงรักษา (เช่น เปลี่ยนน้ำมันเครื่องทุก 200 ชม.) เพิ่มความเสี่ยงที่เครื่องยนต์จะสึกหรอและเสียหาย</span><span class="engineering-note"><strong>คำแนะนำ:</strong> เตรียมการหรือดำเนินการบำรุงรักษาตามรอบที่ผู้ผลิตกำหนด</span>`},
+        'entry.851234898':{label:'ตรวจสอบสภาพโครงสร้างของอุปกรณ์',type:'equals',std:'ผิดปกติ',severity:'warning',message:`<strong>วินิจฉัย:</strong> โครงสร้างตู้ควบคุมหรืออุปกรณ์ไฟฟ้ามีสภาพผิดปกติ เช่น ขึ้นสนิม, บิดเบี้ยว, มีรอยแตก<span class="engineering-note"><strong>ผลกระทบ:</strong> อาจส่งผลต่อความแข็งแรงและความปลอดภัยในการป้องกันอุปกรณ์ภายใน</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ดำเนินการซ่อมแซมเพื่อรักษาสภาพของโครงสร้างให้สมบูรณ์</span>`},
+        'entry.1405771031':{label:'Engine RPM',type:'numeric_range',std:[2200,2400],severity:'warning',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> ความเร็วรอบเครื่องยนต์ (${val} RPM) ต่ำกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} RPM)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> อาจทำให้ปั๊มน้ำสร้างแรงดันและอัตราการไหลได้ไม่ถึงค่าที่ออกแบบไว้ ประสิทธิภาพการดับเพลิงลดลง และไดชาร์จอาจผลิตกระแสไฟได้ไม่เพียงพอ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับจูน Governor หรือระบบควบคุมรอบเครื่องยนต์</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> ความเร็วรอบเครื่องยนต์ (${val} RPM) สูงกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} RPM)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> ทำให้เครื่องยนต์ทำงานหนักเกินความจำเป็น สิ้นเปลืองเชื้อเพลิง และเพิ่มการสึกหรอในระยะยาว อาจสร้างแรงดันในระบบสูงเกินไปจนเป็นอันตรายต่อท่อและข้อต่อได้</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ปรับจูน Governor หรือระบบควบคุมรอบเครื่องยนต์</span>`},
+        'entry.797055912':{label:'แรงดันน้ำที่เครื่องยนต์เริ่มทำงาน',type:'numeric_range',std:[94,104],severity:'critical',low_message:(val,std)=>`<strong>วินิจฉัย:</strong> Fire Pump ตั้งค่าแรงดันเริ่มทำงานที่ ${val} PSI ซึ่งต่ำกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> นี่คือจุดวิกฤต! การตั้งค่าที่ต่ำไปอาจทำให้ Fire Pump เริ่มทำงานช้าเกินไปในสถานการณ์เพลิงไหม้จริง ทำให้การตอบสนองต่อเหตุการณ์ล่าช้า</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ต้องทำการปรับตั้ง Pressure Switch ของ Fire Pump ให้เริ่มทำงานที่ 99 PSI (หรือต่ำกว่าแรงดันเริ่มของ Jockey Pump) โดยทันที</span>`,high_message:(val,std)=>`<strong>วินิจฉัย:</strong> Fire Pump ตั้งค่าแรงดันเริ่มทำงานที่ ${val} PSI ซึ่งสูงกว่าช่วงมาตรฐาน (${std[0]}-${std[1]} PSI)<span class="engineering-note"><strong>ผลกระทบทางวิศวกรรม:</strong> นี่คือจุดวิกฤต! หากตั้งค่าสูงเกินไป (ใกล้เคียงกับแรงดันเริ่มของ Jockey Pump) อาจทำให้ Fire Pump ไม่ทำงานเลย เพราะ Jockey Pump จะทำงานก่อนเสมอ</span><span class="engineering-note"><strong>คำแนะนำ:</strong> ต้องทำการปรับตั้ง Pressure Switch ของ Fire Pump ให้เริ่มทำงานที่ 99 PSI โดยทันที</span>`}};
+    
+    function generateAiAnalysis(data) {
+        let criticalIssues = new Set();
+        let warnings = new Set();
+        for (const entryId in analysisRules) {
+            const rule = analysisRules[entryId];
+            const rawValue = data[entryId];
+            if (rawValue === undefined || rawValue === '' || rawValue === null) continue;
+            
+            let issue = '';
+            const numericValue = parseFloat(String(rawValue).replace(/,/g, ''));
+
+            if (rule.type === 'less_than' && !isNaN(numericValue) && numericValue < rule.std) {
+                issue = `<li>${rule.message(rawValue, rule.std)}</li>`;
+            } else if (rule.type === 'numeric_range' && !isNaN(numericValue) && rule.std.length === 2) {
+                if (numericValue < rule.std[0]) issue = `<li>${rule.low_message(rawValue, rule.std)}</li>`;
+                else if (numericValue > rule.std[1]) issue = `<li>${rule.high_message(rawValue, rule.std)}</li>`;
+            } else if (rule.type === 'equals' && String(rawValue).trim().toLowerCase() === rule.std.toLowerCase()) {
+                issue = `<li>${rule.message}</li>`;
+            } else if (rule.type === 'running_hours' && !isNaN(numericValue)) {
+                if (numericValue > 0 && (numericValue % rule.std > rule.std - 50 || numericValue % rule.std === 0)) {
+                    issue = `<li>${rule.message(rawValue)}</li>`;
+                }
+            }
+
+            if (issue) {
+                if (rule.severity === 'critical') criticalIssues.add(issue);
+                else warnings.add(issue);
+            }
+        }
+        
+        const critArray = Array.from(criticalIssues);const warnArray = Array.from(warnings);let html = '';if (critArray.length > 0) {html += `<div class="ai-response-card ai-critical"><h3>🚨 รายการต้องแก้ไขเร่งด่วน</h3><ul>${critArray.join('')}</ul></div>`;}if (warnArray.length > 0) {html += `<div class="ai-response-card ai-warning"><h3>⚠️ ข้อควรระวังทางวิศวกรรม</h3><ul>${warnArray.join('')}</ul></div>`;}if (critArray.length === 0 && warnArray.length === 0) {html = `<div class="ai-response-card ai-summary"><h3>✅ สรุปภาพรวม</h3><p>จากการวิเคราะห์ข้อมูล ไม่พบความผิดปกติที่มีนัยสำคัญทางวิศวกรรม ระบบอยู่ในสถานะพร้อมใช้งาน</p></div>` + html;} else {html = `<div class="ai-response-card ai-summary"><h3>📝 สรุปภาพรวม</h3><p>ตรวจพบ ${critArray.length} ปัญหาระดับวิกฤต และ ${warnArray.length} ข้อควรระวัง กรุณาดำเนินการตามคำแนะนำทางวิศวกรรมด้านล่าง</p></div>` + html;}html += `<div class="ai-response-card ai-recommendation"><h3>💡 คำแนะนำทั่วไป</h3><p>ควรมีการจัดทำ Logbook เพื่อบันทึกค่าที่วัดได้และกิจกรรมการบำรุงรักษาทุกครั้ง ซึ่งจะช่วยในการวิเคราะห์แนวโน้ม (Trend Analysis) และการบำรุงรักษาเชิงพยากรณ์ (Predictive Maintenance) ในอนาคต</p></div>`;return html;
+    }
+
+    function runAiAnalysis(rowIndex) {
+        const record = filteredRecords[rowIndex]; if (!record) return; const aiData = {}; const headers = Object.keys(record); for (const headerKey in headerToEntryIdMap) { const entryId = headerToEntryIdMap[headerKey]; const fullHeader = headers.find(h => h.startsWith(headerKey)); if (fullHeader && record[fullHeader] !== undefined) { aiData[entryId] = record[fullHeader]; } }
+        const dialog = domCache.aiDialog;
+        dialog.innerHTML = `<div class="dialog-header"> <svg class="ai-avatar" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="100" fill="url(#avatar-bg-gradient)"/><g transform="translate(0, 10)"><path d="M85,150 L80,170 L120,170 L115,150 Z" fill="#4B5563"/><path d="M80,140 C80,155 120,155 120,140 L125,130 L75,130 Z" fill="#6B7280"/><path d="M60,135 L50,80 Q50,30 100,30 Q150,30 150,80 L140,135 Z" fill="url(#face-plate-gradient)" stroke="#4B5563" stroke-width="3"/><path d="M70 75 L80 65 L100 65 L105 75 L100 85 L80 85 Z" fill="#00796b" stroke="white" stroke-width="2"/><path d="M130 75 L120 65 L100 65 L95 75 L100 85 L120 85 Z" fill="#00796b" stroke="white" stroke-width="2" transform="matrix(-1, 0, 0, 1, 200, 0)"/><path d="M90,50 L110,50 M100,50 L100,40 M95,45 L105,45" stroke="#00796b" stroke-width="2.5" stroke-linecap="round"/><path d="M80,100 L120,100 L115,125 L85,125 Z" fill="#9CA3AF" stroke="#4B5563" stroke-width="2"/><line x1="85" y1="112" x2="115" y2="112" stroke="#6B7280" stroke-width="2"/></g><defs><linearGradient id="avatar-bg-gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#00796b"/><stop offset="1" stop-color="#26a69a"/></linearGradient><linearGradient id="face-plate-gradient" x1="100" y1="20" x2="100" y2="180" gradientUnits="userSpaceOnUse"><stop stop-color="#F2F2F7"/><stop offset="1" stop-color="#E5E5EA"/></linearGradient></defs></svg> <h2 class="header-gradient-text text-xl md:text-2xl font-bold ml-4">ผลการวิเคราะห์จาก AI</h2> <button onclick="this.closest('dialog').close()" aria-label="Close" class="ml-auto text-3xl font-bold text-gray-500 hover:text-gray-800">&times;</button> </div> <div class="dialog-content"> <div id="aiLoading" class="text-center py-8"><div class="loader mx-auto" style="width:40px; height:40px; border-width:4px;"></div><p class="text-gray-500 mt-4">กำลังประมวลผลข้อมูล...</p></div> <div id="aiResult" class="hidden"></div> </div>`;
+        dialog.showModal();
+        setTimeout(() => { const analysisHTML = generateAiAnalysis(aiData); dialog.querySelector('#aiLoading').style.display = 'none'; const resultDiv = dialog.querySelector('#aiResult'); resultDiv.innerHTML = analysisHTML; resultDiv.classList.remove('hidden'); }, 500);
+    }
+
+    // [REWRITTEN] This function now generates a report based on main dashboard filters
+    function generateExecutiveReport() {
+        const dialog = domCache.managementReportDialog;
+        const selectedYears = Array.from(document.querySelectorAll('#year-filter div[style*="display: none"] input:checked')).map(cb => parseInt(cb.value));
+        const selectedMonths = Array.from(document.querySelectorAll('#month-filter div[style*="display: none"] input:checked')).map(cb => parseInt(cb.value));
+        
+        const reportData = getFilteredData(selectedYears, selectedMonths);
+
+        let reportHTML = `<div class="dialog-header"> <i data-lucide="file-text" class="text-teal-600"></i> <h2 class="header-gradient-text text-xl md:text-2xl font-bold ml-4">รายงานสรุป</h2> <button onclick="this.closest('dialog').close()" aria-label="Close" class="ml-auto text-3xl font-bold text-gray-500 hover:text-gray-800">&times;</button> </div>`;
+
+        if (reportData.length === 0) {
+            reportHTML += `<div class="dialog-content"><p class="text-center text-red-500 py-8">ไม่พบข้อมูลตามตัวกรองที่เลือกเพื่อสร้างรายงาน</p></div>`;
+            dialog.innerHTML = reportHTML;
+            dialog.showModal();
+            lucide.createIcons();
+            return;
+        }
+
+        const criticalDetails = [];
+        const warningDetails = [];
+        const problemFrequency = {};
+        let numericTrends = { 'Cooling Water Temperature': [], 'Battery Charging Volt': [] };
+        
+        reportData.forEach(record => {
             const aiData = {};
             const headers = Object.keys(record);
             for (const headerKey in headerToEntryIdMap) {
                 const entryId = headerToEntryIdMap[headerKey];
                 const fullHeader = headers.find(h => h.startsWith(headerKey));
-                if (fullHeader && record[fullHeader] !== undefined) {
-                    aiData[entryId] = record[fullHeader];
+                if (fullHeader && record[fullHeader] !== undefined) aiData[entryId] = record[fullHeader];
+            }
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = generateAiAnalysis(aiData);
+            
+            const collectIssues = (items, collection) => {
+                items.forEach(item => {
+                    const title = item.querySelector('strong')?.textContent.replace('วินิจฉัย:', '').trim();
+                    if (title) problemFrequency[title] = (problemFrequency[title] || 0) + 1;
+                    collection.push({ date: record.Actual, operator: record['ผู้ปฏิบัติงาน'], issueHTML: item.innerHTML });
+                });
+            };
+            collectIssues(tempDiv.querySelectorAll('.ai-critical li'), criticalDetails);
+            collectIssues(tempDiv.querySelectorAll('.ai-warning li'), warningDetails);
+            
+            for (const key in numericTrends) {
+                const fullHeader = Object.keys(record).find(h => h.startsWith(key));
+                if (fullHeader) {
+                    const value = parseFloat(String(record[fullHeader] || '').replace(/,/g, ''));
+                    if (!isNaN(value)) numericTrends[key].push(value);
                 }
             }
-            const dialog = document.getElementById('aiDialog');
-            // [FIX #2] Apply the robust dialog structure
-            dialog.innerHTML = `<div class="dialog-content-wrapper">
-                <div class="dialog-header">
-                    <svg class="ai-avatar" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="100" fill="url(#avatar-bg-gradient)"/><g transform="translate(0, 10)"><path d="M85,150 L80,170 L120,170 L115,150 Z" fill="#4B5563"/><path d="M80,140 C80,155 120,155 120,140 L125,130 L75,130 Z" fill="#6B7280"/><path d="M60,135 L50,80 Q50,30 100,30 Q150,30 150,80 L140,135 Z" fill="url(#face-plate-gradient)" stroke="#4B5563" stroke-width="3"/><path d="M70 75 L80 65 L100 65 L105 75 L100 85 L80 85 Z" fill="#00796b" stroke="white" stroke-width="2"/><path d="M130 75 L120 65 L100 65 L95 75 L100 85 L120 85 Z" fill="#00796b" stroke="white" stroke-width="2" transform="matrix(-1, 0, 0, 1, 200, 0)"/><path d="M90,50 L110,50 M100,50 L100,40 M95,45 L105,45" stroke="#00796b" stroke-width="2.5" stroke-linecap="round"/><path d="M80,100 L120,100 L115,125 L85,125 Z" fill="#9CA3AF" stroke="#4B5563" stroke-width="2"/><line x1="85" y1="112" x2="115" y2="112" stroke="#6B7280" stroke-width="2"/></g><defs><linearGradient id="avatar-bg-gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse"><stop stop-color="#00796b"/><stop offset="1" stop-color="#26a69a"/></linearGradient><linearGradient id="face-plate-gradient" x1="100" y1="20" x2="100" y2="180" gradientUnits="userSpaceOnUse"><stop stop-color="#F2F2F7"/><stop offset="1" stop-color="#E5E5EA"/></linearGradient></defs></svg>
-                    <h2 class="header-gradient-text text-xl md:text-2xl font-bold ml-4">ผลการวิเคราะห์จาก AI</h2>
-                    <button onclick="this.closest('dialog').close()" class="ml-auto text-3xl font-bold text-gray-500 hover:text-gray-800">&times;</button>
-                </div>
-                <div class="dialog-body-scrollable">
-                    <div id="aiLoading" class="text-center py-8"><div class="loader mx-auto" style="width:40px; height:40px; border-width:4px;"></div><p class="text-gray-500 mt-4">กำลังประมวลผลข้อมูล...</p></div>
-                    <div id="aiResult" class="hidden space-y-4"></div>
-                </div>
-            </div>`;
-            dialog.showModal();
-            setTimeout(() => {
-                const analysisHTML = generateAiAnalysis(aiData);
-                document.getElementById('aiLoading').style.display = 'none';
-                const resultDiv = document.getElementById('aiResult');
-                resultDiv.innerHTML = analysisHTML;
-                resultDiv.classList.remove('hidden');
-            }, 500);
-        }
-
-        function generateExecutiveReport() {
-            const dialog = document.getElementById('managementReportDialog');
-            const years = [...new Set(allRecords.map(r => DateHandler.parseDate(r.Actual).getFullYear()))].sort((a,b) => b-a);
-            
-            // [FIX #2] Apply the robust dialog structure
-            dialog.innerHTML = `<div class="dialog-content-wrapper">
-                <div class="dialog-header">
-                    <i data-lucide="file-text" class="text-teal-600"></i>
-                    <h2 class="header-gradient-text text-xl md:text-2xl font-bold ml-4">สร้างรายงานสรุป</h2>
-                    <button onclick="this.closest('dialog').close()" class="ml-auto text-3xl font-bold text-gray-500 hover:text-gray-800">&times;</button>
-                </div>
-                <div class="flex-shrink-0 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="block text-sm font-medium mb-1">เลือกปี (พ.ศ.):</label><div id="report-year-filter" class="custom-filter"></div></div>
-                        <div><label class="block text-sm font-medium mb-1">เลือกเดือน:</label><div id="report-month-filter" class="custom-filter"></div></div>
-                    </div>
-                    <button id="generate-summary-btn" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-lg">สร้างสรุป</button>
-                </div>
-                <div id="summary-content-wrapper" class="dialog-body-scrollable mt-4 hidden"></div>
-            </div>`;
-            dialog.showModal();
-            
-            const yearOptions = years.map(y => ({value:y,text:y+543}));
-            const monthOptions = thaiMonths.map((m,i)=>({value:i,text:m}));
-
-            createCheckboxFilter('report-year-filter', yearOptions, 'ปี');
-            createCheckboxFilter('report-month-filter', monthOptions, 'เดือน');
-            lucide.createIcons();
-
-            document.getElementById('generate-summary-btn').addEventListener('click', () => {
-                const selectedYears = Array.from(document.querySelectorAll('#report-year-filter input:checked')).map(cb => parseInt(cb.value));
-                const selectedMonths = Array.from(document.querySelectorAll('#report-month-filter input:checked')).map(cb => parseInt(cb.value));
-
-                const reportData = allRecords.filter(r => {
-                    const date = DateHandler.parseDate(r.Actual);
-                    if (!date) return false;
-                    const yearMatch = selectedYears.length === 0 || selectedYears.includes(date.getFullYear());
-                    const monthMatch = selectedMonths.length === 0 || selectedMonths.includes(date.getMonth());
-                    return yearMatch && monthMatch;
-                });
-
-                const summaryWrapper = document.getElementById('summary-content-wrapper');
-                if (reportData.length === 0) {
-                    summaryWrapper.innerHTML = '<p class="text-center text-red-500">ไม่พบข้อมูลสำหรับช่วงเวลาที่เลือก</p>';
-                    summaryWrapper.classList.remove('hidden');
-                    return;
-                }
-
-                const criticalDetails = [];
-                const warningDetails = [];
-                const problemFrequency = {};
-                let numericTrends = { 'Cooling Water Temperature': [], 'Battery Charging Volt': [] };
-                
-                reportData.forEach(record => {
-                    const aiData = {};
-                    const headers = Object.keys(record);
-                    for (const headerKey in headerToEntryIdMap) {
-                        const entryId = headerToEntryIdMap[headerKey];
-                        const fullHeader = headers.find(h => h.startsWith(headerKey));
-                        if (fullHeader && record[fullHeader] !== undefined) aiData[entryId] = record[fullHeader];
-                    }
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = generateAiAnalysis(aiData);
-                    
-                    const collectIssues = (items, collection) => {
-                        items.forEach(item => {
-                            const title = item.querySelector('strong')?.textContent.replace('วินิจฉัย:','').trim();
-                            if(title) problemFrequency[title] = (problemFrequency[title] || 0) + 1;
-                            collection.push({
-                                date: record.Actual,
-                                operator: record['ผู้ปฏิบัติงาน'],
-                                issueHTML: item.innerHTML
-                            });
-                        });
-                    };
-
-                    collectIssues(tempDiv.querySelectorAll('.ai-critical li'), criticalDetails);
-                    collectIssues(tempDiv.querySelectorAll('.ai-warning li'), warningDetails);
-
-                    for(const key in numericTrends){
-                        const fullHeader = headers.find(h => h.startsWith(key));
-                        const value = parseFloat(String(record[fullHeader] || '').replace(/,/g, ''));
-                        if(!isNaN(value)) numericTrends[key].push(value);
-                    }
-                });
-                
-                const getTrend = (arr) => {
-                    if (arr.length < 2) return 'ข้อมูลไม่เพียงพอ';
-                    const firstHalfAvg = arr.slice(0, Math.floor(arr.length / 2)).reduce((a, b) => a + b, 0) / Math.floor(arr.length / 2);
-                    const secondHalfAvg = arr.slice(Math.ceil(arr.length / 2)).reduce((a, b) => a + b, 0) / Math.ceil(arr.length / 2);
-                    if (secondHalfAvg > firstHalfAvg * 1.05) return 'มีแนวโน้มสูงขึ้น 📈';
-                    if (secondHalfAvg < firstHalfAvg * 0.95) return 'มีแนวโน้มลดลง 📉';
-                    return 'คงที่ 📊';
-                };
-
-                const sortedProblems = Object.entries(problemFrequency).sort(([,a],[,b]) => b-a).slice(0, 3);
-                
-                let periodText = 'สรุปภาพรวมทั้งหมด';
-                if(selectedYears.length > 0) periodText = `สรุปปี พ.ศ. ${selectedYears.map(y => y + 543).join(', ')}`;
-                if(selectedMonths.length > 0) periodText += ` เดือน ${selectedMonths.map(m => thaiMonths[m]).join(', ')}`;
-                
-                summaryWrapper.innerHTML = `
-                    <p class="text-center text-gray-600"><strong>${periodText}</strong></p>
-                    <div class="executive-summary-grid mt-4">
-                        <div class="summary-item"><div class="label">จำนวนการตรวจสอบ</div><div class="value">${reportData.length} ครั้ง</div></div>
-                        <div id="critical-summary" class="summary-item ${criticalDetails.length > 0 ? 'clickable' : ''}"><div class="label">ปัญหาระดับวิกฤต (รวม)</div><div class="value" style="color:${criticalDetails.length > 0 ? 'var(--color-danger)' : 'var(--color-ok)'}">${criticalDetails.length} รายการ</div></div>
-                        <div id="warning-summary" class="summary-item ${warningDetails.length > 0 ? 'clickable' : ''}"><div class="label">ข้อควรระวัง (รวม)</div><div class="value" style="color:${warningDetails.length > 0 ? 'var(--color-warning)' : 'var(--color-ok)'}">${warningDetails.length} รายการ</div></div>
-                    </div>
-                    <div id="critical-details" class="report-details-container"></div>
-                    <div id="warning-details" class="report-details-container"></div>
-                    <div class="ai-response-card ai-summary mt-4">
-                        <h3>📊 การวิเคราะห์แนวโน้ม</h3>
-                        <ul class="list-none p-0 m-0 space-y-2">
-                        ${Object.entries(numericTrends).map(([key, value]) => `<li class="flex justify-between"><span>${abbreviateHeader(key)}</span><span class="font-semibold">${getTrend(value)}</span></li>`).join('')}
-                        </ul>
-                    </div>
-                     <div class="ai-response-card ai-summary mt-4">
-                        <h3>⚠️ ปัญหาที่พบบ่อยที่สุด</h3>
-                        ${sortedProblems.length > 0 ? `<ol class="list-decimal pl-5">${sortedProblems.map(([key, value]) => `<li>${key} <strong>(${value} ครั้ง)</strong></li>`).join('')}</ol>` : '<p>ไม่พบรายการผิดปกติที่เกิดซ้ำ</p>'}
-                    </div>
-                `;
-                summaryWrapper.classList.remove('hidden');
-                
-                const toggleDetails = (type, details) => {
-                    const container = document.getElementById(`${type}-details`);
-                    const otherContainer = document.getElementById(`${type === 'critical' ? 'warning' : 'critical'}-details`);
-                    
-                    if (otherContainer) otherContainer.classList.remove('show');
-
-                    if (container.classList.contains('show')) {
-                        container.classList.remove('show');
-                        return;
-                    }
-
-                    let listHTML = `<ul class="report-details-list">`;
-                    details.forEach(detail => {
-                        listHTML += `<li><div class="issue-date">วันที่: ${DateHandler.formatDate(DateHandler.parseDate(detail.date))}</div><div class="issue-message">${detail.issueHTML}</div></li>`;
-                    });
-                    listHTML += '</ul>';
-                    container.innerHTML = listHTML;
-                    container.classList.add('show');
-                };
-
-                if (criticalDetails.length > 0) {
-                    document.getElementById('critical-summary').addEventListener('click', () => toggleDetails('critical', criticalDetails));
-                }
-                if (warningDetails.length > 0) {
-                    document.getElementById('warning-summary').addEventListener('click', () => toggleDetails('warning', warningDetails));
-                }
-            });
-        }
+        });
         
-        function main() {
-            const fetchData = () => {
-                fetch(WEB_APP_URL)
-                    .then(res => { if (!res.ok) throw new Error(`Server connection failed: ${res.status}`); return res.json(); })
-                    .then(jsonData => {
-                        const headers = jsonData[0], rows = jsonData.slice(1);
-                        allRecords = rows.map(r => headers.reduce((obj, h, i) => { obj[h] = r[i]; return obj; }, {}))
-                                         .filter(r => r['Actual'] && DateHandler.parseDate(r['Actual']));
-                        
-                        if (allRecords.length === 0) {
-                            renderDashboard([]);
-                            const loader = document.getElementById('loader-overlay');
-                            document.getElementById('loader-text').textContent = "ไม่พบข้อมูลในระบบ";
-                            setTimeout(() => { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }, 1000);
-                            return;
-                        }
-                        
-                        allRecords.sort((a, b) => (DateHandler.parseDate(b.Actual)?.getTime() || 0) - (DateHandler.parseDate(a.Actual)?.getTime() || 0));
-                        
-                        if (!document.getElementById('dashboard-content').classList.contains('loaded')) {
-                            populateFilters(allRecords);
-                            document.getElementById('dashboard-content').classList.add('loaded');
-                        }
-                        
-                        applyFilters();
-                        
-                        const loader = document.getElementById('loader-overlay');
-                        loader.style.opacity = '0';
-                        setTimeout(() => { loader.style.display = 'none'; }, 500);
-                        updateSystemTime();
-                    })
-                    .catch(error => {
-                        console.error("Fatal Error:", error);
-                        document.getElementById('loader-text').innerHTML = `<div class="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"><strong>เกิดข้อผิดพลาด:</strong><br>${error.message}</div>`;
-                    });
-            };
+        const getTrend = (arr) => {
+            if (arr.length < 2) return 'ข้อมูลไม่เพียงพอ';
+            const half = Math.ceil(arr.length / 2);
+            const firstHalfAvg = arr.slice(0, half).reduce((a, b) => a + b, 0) / half;
+            const secondHalfAvg = arr.slice(half).reduce((a, b) => a + b, 0) / (arr.length - half);
+            if (secondHalfAvg > firstHalfAvg * 1.05) return 'มีแนวโน้มสูงขึ้น 📈';
+            if (secondHalfAvg < firstHalfAvg * 0.95) return 'มีแนวโน้มลดลง 📉';
+            return 'คงที่ 📊';
+        };
 
-            const updateSystemTime=()=>{const e=new Date,t=e.toLocaleString("th-TH",{timeZone:"Asia/Bangkok",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"});document.getElementById("system-time").textContent=`อัปเดตล่าสุด: ${t}`};
-
-            fetchData();
-            document.getElementById('apply-filter-btn').addEventListener('click', applyFilters);
-            document.getElementById('reset-filter-btn').addEventListener('click', () => {
-                document.querySelectorAll('#year-filter input:checked, #month-filter input:checked').forEach(cb => cb.checked = false);
-                filteredRecords = allRecords;
-                renderDashboard(filteredRecords);
-            });
-            document.getElementById('executive-report-btn').addEventListener('click', generateExecutiveReport);
-            setInterval(fetchData, 5 * 60 * 1000);
+        const sortedProblems = Object.entries(problemFrequency).sort(([, a], [, b]) => b - a).slice(0, 3);
+        let periodText = 'ทั้งหมด';
+        if (selectedYears.length > 0) periodText = `ปี พ.ศ. ${selectedYears.map(y => y + 543).join(', ')}`;
+        if (selectedMonths.length > 0) {
+            const monthText = ` เดือน ${selectedMonths.map(m => thaiMonths[m]).join(', ')}`;
+            periodText = (selectedYears.length > 0) ? periodText + monthText : monthText.trim();
         }
+
+        reportHTML += `<div class="dialog-content">
+            <p class="text-center text-gray-600 mb-4"><strong>สรุปผลตามตัวกรอง:</strong> ${periodText}</p>
+            <div class="executive-summary-grid">
+                <div class="summary-item"><div class="label">จำนวนการตรวจสอบ</div><div class="value">${reportData.length} ครั้ง</div></div>
+                <div id="critical-summary" class="summary-item ${criticalDetails.length > 0 ? 'clickable' : ''}"><div class="label">ปัญหาระดับวิกฤต (รวม)</div><div class="value" style="color:${criticalDetails.length > 0 ? 'var(--color-danger)' : 'var(--color-ok)'}">${criticalDetails.length} รายการ</div></div>
+                <div id="warning-summary" class="summary-item ${warningDetails.length > 0 ? 'clickable' : ''}"><div class="label">ข้อควรระวัง (รวม)</div><div class="value" style="color:${warningDetails.length > 0 ? 'var(--color-warning)' : 'var(--color-ok)'}">${warningDetails.length} รายการ</div></div>
+            </div>
+            <div id="critical-details" class="report-details-container"></div>
+            <div id="warning-details" class="report-details-container"></div>
+            <div class="ai-response-card ai-summary mt-4">
+                <h3>📊 การวิเคราะห์แนวโน้ม</h3>
+                <ul class="list-none p-0 m-0 space-y-2">${Object.entries(numericTrends).map(([key, value]) => `<li class="flex justify-between"><span>${abbreviateHeader(key)}</span><span class="font-semibold">${getTrend(value)}</span></li>`).join('')}</ul>
+            </div>
+            <div class="ai-response-card ai-summary mt-4">
+                <h3>⚠️ ปัญหาที่พบบ่อยที่สุด</h3>
+                ${sortedProblems.length > 0 ? `<ol class="list-decimal pl-5">${sortedProblems.map(([key, value]) => `<li>${key} <strong>(${value} ครั้ง)</strong></li>`).join('')}</ol>` : '<p>ไม่พบรายการผิดปกติที่เกิดซ้ำ</p>'}
+            </div>
+        </div>`;
         
-        main();
+        dialog.innerHTML = reportHTML;
+        dialog.showModal();
         lucide.createIcons();
-    });
+        
+        const toggleDetails = (type, details) => {
+            const container = dialog.querySelector(`#${type}-details`);
+            const otherContainer = dialog.querySelector(`#${type === 'critical' ? 'warning' : 'critical'}-details`);
+            if (otherContainer) otherContainer.classList.remove('show');
+            if (container.classList.contains('show')) {
+                container.classList.remove('show');
+                return;
+            }
+            let listHTML = `<ul class="report-details-list">${details.map(detail => `<li><div class="issue-date">วันที่: ${DateHandler.formatDate(DateHandler.parseDate(detail.date))}</div><div class="issue-message">${detail.issueHTML}</div></li>`).join('')}</ul>`;
+            container.innerHTML = listHTML;
+            container.classList.add('show');
+        };
+
+        if (criticalDetails.length > 0) {
+            dialog.querySelector('#critical-summary').addEventListener('click', () => toggleDetails('critical', criticalDetails));
+        }
+        if (warningDetails.length > 0) {
+            dialog.querySelector('#warning-summary').addEventListener('click', () => toggleDetails('warning', warningDetails));
+        }
+    }
+    
+    function main() {
+        let timeoutId;
+        const fetchData = () => {
+            clearTimeout(timeoutId); const controller = new AbortController(); const signal = controller.signal;
+            timeoutId = setTimeout(() => { controller.abort(); handleError(new Error("การเชื่อมต่อหมดเวลา (Timeout) กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตหรือลองอีกครั้ง")); }, 15000);
+
+            fetch(WEB_APP_URL, { signal })
+                .then(res => { if (!res.ok) throw new Error(`Server connection failed: ${res.status}`); return res.json(); })
+                .then(jsonData => {
+                    clearTimeout(timeoutId); const headers = jsonData[0], rows = jsonData.slice(1);
+                    allRecords = rows.map(r => headers.reduce((obj, h, i) => { obj[h] = r[i]; return obj; }, {})).filter(r => r['Actual'] && DateHandler.parseDate(r['Actual']));
+                    if (allRecords.length === 0) { throw new Error("ไม่พบข้อมูลที่ถูกต้องใน Google Sheet"); }
+                    allRecords.sort((a, b) => (DateHandler.parseDate(b.Actual)?.getTime() || 0) - (DateHandler.parseDate(a.Actual)?.getTime() || 0));
+                    if (!domCache.dashboardContent.classList.contains('loaded')) {
+                        populateFilters(allRecords);
+                        domCache.dashboardContent.classList.add('loaded');
+                    }
+                    applyFilters();
+                    domCache.loaderOverlay.style.opacity = '0';
+                    setTimeout(() => { domCache.loaderOverlay.style.display = 'none'; }, 500);
+                    updateSystemTime();
+                })
+                .catch(handleError);
+        };
+
+        const handleError = (error) => { clearTimeout(timeoutId); console.error("Fatal Error:", error); domCache.loaderText.innerHTML = `<div class="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"><strong>เกิดข้อผิดพลาด:</strong><br>${error.message}<br><button onclick="location.reload()" class="mt-2 bg-red-500 text-white px-4 py-1 rounded">ลองใหม่</button></div>`; };
+        const updateSystemTime=()=>{const e=new Date,t=e.toLocaleString("th-TH",{timeZone:"Asia/Bangkok",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"});document.getElementById("system-time").textContent=`อัปเดตล่าสุด: ${t}`};
+
+        fetchData();
+        document.getElementById('apply-filter-btn').addEventListener('click', applyFilters);
+        document.getElementById('reset-filter-btn').addEventListener('click', () => {
+            document.querySelectorAll('.custom-filter div[style*="display: none"]').forEach(container => container.innerHTML = '');
+            document.querySelector('#year-filter .filter-button').textContent = 'เลือกปี...';
+            document.querySelector('#month-filter .filter-button').textContent = 'เลือกเดือน...';
+            applyFilters();
+        });
+        document.getElementById('executive-report-btn').addEventListener('click', generateExecutiveReport);
+        setInterval(fetchData, 5 * 60 * 1000);
+    }
+    
+    main();
+    lucide.createIcons();
+});
 </script>
 </body>
 </html>
